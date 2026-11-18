@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fraction & Decimal Patterns</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: graph-paper exercise book. Sticky tab bar; Investigations = rail of 5 tasks + stacked step cards; repeating digits always wear a highlighter band. */
+:root{
+  --paper:#F2F6F4; --sheet:#FFFFFF; --ink:#132B27; --muted:#4F655E; --line:rgba(19,43,39,.14); --grid:rgba(15,124,110,.075);
+  --teal:#0E7466; --teal-ink:#FFFFFF; --teal-soft:#DCEFEA;
+  --hl:#FFE27A; --hl-ink:#3A2D00;
+  --good:#17804F; --good-bg:#DDF3E7; --bad:#B23A30; --bad-bg:#FBE4E1; --warn:#8A5A00; --warn-bg:#FFF1CF;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0D1917; --sheet:#132421; --ink:#E2EEEA; --muted:#9DB4AD; --line:rgba(226,238,234,.14); --grid:rgba(94,207,186,.06);
+  --teal:#5ECFBA; --teal-ink:#062420; --teal-soft:#173A35; --hl:#5C4A0E; --hl-ink:#FFE9A6;
+  --good:#5BD199; --good-bg:#11372A; --bad:#FF8A7E; --bad-bg:#3E1A18; --warn:#F2BE5C; --warn-bg:#3A2C0C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0D1917; --sheet:#132421; --ink:#E2EEEA; --muted:#9DB4AD; --line:rgba(226,238,234,.14); --grid:rgba(94,207,186,.06);
+  --teal:#5ECFBA; --teal-ink:#062420; --teal-soft:#173A35; --hl:#5C4A0E; --hl-ink:#FFE9A6;
+  --good:#5BD199; --good-bg:#11372A; --bad:#FF8A7E; --bad-bg:#3E1A18; --warn:#F2BE5C; --warn-bg:#3A2C0C; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.12;text-wrap:balance;margin:0}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:6px}
+.num,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.ol{text-decoration:overline;text-decoration-thickness:2px;background:var(--hl);color:var(--hl-ink);border-radius:3px;padding:0 1px}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-family:var(--mono);font-size:.86em;line-height:1.1;margin:0 2px}
+.fr>span:last-child{border-top:1.5px solid currentColor;padding-top:1px;min-width:100%;text-align:center}
+.muted{color:var(--muted)}
+.dot{position:relative;display:inline-block}
+.dot::after{content:"";position:absolute;left:50%;top:-.12em;width:.24em;height:.24em;margin-left:-.12em;border-radius:50%;background:currentColor}
+.notation .mono{white-space:nowrap}
+small{font-size:.85rem}
+
+/* header */
+header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+header.bar .wrap{display:flex;align-items:center;gap:12px 20px;padding-block:10px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.08rem;display:flex;align-items:center;gap:8px;margin-right:auto}
+.brand .fr{font-size:.78rem;color:var(--teal)}
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap}
+nav.tabs a{padding:7px 12px;border-radius:8px;text-decoration:none;color:var(--muted);font-weight:700;font-size:.95rem}
+nav.tabs a:hover{color:var(--ink);background:var(--teal-soft)}
+nav.tabs a[aria-current="page"]{background:var(--teal);color:var(--teal-ink)}
+
+.hero{padding-block:28px 10px}
+.hero .eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);font-weight:600}
+.hero h1{font-size:clamp(1.7rem,4.2vw,2.6rem);font-weight:800;margin-top:6px}
+.hero .lede{max-width:64ch;margin-top:10px;color:var(--muted)}
+.hero .demo{margin-top:16px;font-family:var(--mono);font-size:clamp(1rem,2.6vw,1.3rem);display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.hero .demo .eq{white-space:nowrap}
+
+main{padding-block:12px 64px}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:20px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.74rem;font-weight:600;letter-spacing:.03em;padding:3px 8px;border-radius:999px;background:var(--teal-soft);color:var(--teal);white-space:nowrap}
+.chip.done{background:var(--good-bg);color:var(--good)}
+.btn{border:1px solid var(--teal);background:var(--teal);color:var(--teal-ink);border-radius:9px;padding:8px 14px;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--teal)}
+.btn:hover{filter:brightness(1.06)}
+.btn.small{padding:5px 10px;font-size:.88rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.msg{margin-top:10px;padding:9px 12px;border-radius:9px;font-size:.95rem}
+.msg.good{background:var(--good-bg);color:var(--good)}
+.msg.bad{background:var(--bad-bg);color:var(--bad)}
+.msg.warn{background:var(--warn-bg);color:var(--warn)}
+input[type=text],input[type=number],select,textarea{background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:6px 9px;min-width:0}
+input[type=text]{font-family:var(--mono)}
+textarea{width:100%;min-height:96px;resize:vertical;line-height:1.5}
+.ok>input,.ok>select,input.ok{border-color:var(--good);background:var(--good-bg)}
+.no>input,.no>select,input.no{border-color:var(--bad);background:var(--bad-bg)}
+
+/* investigations */
+.inv-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:8px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px)}
+.rail button{text-align:left;background:var(--sheet);border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;cursor:pointer;display:grid;gap:4px}
+.rail button[aria-pressed="true"]{border-color:var(--teal);box-shadow:inset 4px 0 0 var(--teal)}
+.rail b{font-family:var(--display);font-size:1rem}
+.rail .prog{height:5px;border-radius:9px;background:var(--line);overflow:hidden}
+.rail .prog i{display:block;height:100%;background:var(--good);width:0}
+.steps{display:flex;flex-direction:column;gap:16px;min-width:0}
+.inv-head h2{font-size:1.55rem}
+.inv-head p{color:var(--muted);margin-top:6px;max-width:66ch}
+.step{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.step header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.step h3{font-size:1.12rem;margin-right:auto}
+.step .n{font-family:var(--mono);color:var(--muted);font-size:.85rem}
+.step .intro{color:var(--muted);margin-bottom:12px;max-width:70ch}
+.tbl{overflow-x:auto;margin-inline:-4px}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th{text-align:left;font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1.5px solid var(--line)}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle;font-variant-numeric:tabular-nums}
+td input[type=text]{width:9.5em}
+td .ans{font-family:var(--mono);font-size:.85rem;color:var(--teal);margin-top:3px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:10px 13px;cursor:pointer;line-height:1.45}
+.opt:hover{border-color:var(--teal)}
+.opt.right{border-color:var(--good);background:var(--good-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.q{font-weight:700;margin-bottom:10px;max-width:70ch}
+.kw{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.kw span{font-size:.82rem;padding:3px 9px;border-radius:999px;border:1px solid var(--line)}
+.kw .hit{background:var(--good-bg);color:var(--good);border-color:transparent}
+.kw .miss{color:var(--muted);border-style:dashed}
+.model{margin-top:12px;border-left:3px solid var(--teal);padding:8px 14px;background:var(--teal-soft);border-radius:0 9px 9px 0}
+.model b{font-family:var(--display)}
+
+/* explore */
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.lab-in{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lab-in .stack{display:inline-flex;flex-direction:column;gap:4px;align-items:center}
+.lab-in .stack input{width:6.5em;text-align:center;font-family:var(--mono);font-size:1.1rem}
+.lab-in .stack hr{width:100%;border:0;border-top:2px solid var(--ink);margin:0}
+.big{font-family:var(--mono);font-size:clamp(1.3rem,3.6vw,2rem);word-break:break-all;margin-top:14px;line-height:1.35}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin-top:14px;font-size:.95rem}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0;font-family:var(--mono)}
+.verdict{font-family:var(--body);font-weight:700;padding:2px 9px;border-radius:999px}
+.verdict.T{background:var(--good-bg);color:var(--good)}
+.verdict.R{background:var(--warn-bg);color:var(--warn)}
+tr.loop td{background:var(--hl);color:var(--hl-ink)}
+.notation{margin-top:16px;font-size:.92rem;color:var(--muted)}
+h2.sec{font-size:1.3rem;margin-bottom:10px}
+
+/* quick fire */
+.qf{max-width:720px}
+.score{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.9rem;color:var(--muted);margin-bottom:12px}
+.score b{color:var(--ink);font-size:1.15rem}
+.qprompt{font-size:1.3rem;font-family:var(--display);font-weight:700;margin-block:6px 14px;line-height:1.5}
+.qf input[type=text]{font-size:1.15rem;width:14em;max-width:100%}
+.preview{font-family:var(--mono);margin-top:6px;color:var(--muted);min-height:1.5em}
+
+/* rubric */
+.rub{display:grid;gap:14px}
+.strand{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;padding:16px 18px}
+.strand .code{font-family:var(--mono);font-weight:600;color:var(--teal)}
+.strand .desc{color:var(--muted);font-size:.94rem;margin-top:4px}
+.strand label{display:flex;gap:9px;align-items:flex-start;padding:4px 0;cursor:pointer;font-size:.95rem}
+.strand input{margin-top:4px;accent-color:var(--teal)}
+.planner{display:grid;gap:14px}
+.planner label{font-weight:700;font-family:var(--display)}
+.planner .hint{font-weight:400;font-family:var(--body);color:var(--muted);font-size:.88rem;display:block}
+
+@media (max-width:820px){
+  .inv-layout,.lab,.strand{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static;flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  .rail button{min-width:200px}
+}
+@media (prefers-reduced-motion:no-preference){.opt,.rail button,.btn{transition:border-color .15s,background .15s,filter .15s}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="brand"><span class="fr"><span>a</span><span>b</span></span> Fraction &amp; Decimal Patterns</div>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#investigate" data-view="investigate">Investigations</a>
+      <a href="#explore" data-view="explore">Explore lab</a>
+      <a href="#quickfire" data-view="quickfire">Quick fire</a>
+      <a href="#rubric" data-view="rubric">Rubric &amp; write-up</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero wrap">
+  <div class="eyebrow">Year 8 · Criterion B summative practice</div>
+  <h1>Find the pattern. State the rule. Prove it.</h1>
+  <p class="lede">A chance to use what you know about fractions and decimals to investigate patterns. Work through each investigation like the summative: collect data, describe the pattern as a general rule, verify it on new cases, then justify why it always works.</p>
+  <div class="demo">
+    <span class="eq"><span class="fr"><span>1</span><span>7</span></span> = 0.<span class="ol">142857</span></span>
+    <span class="eq"><span class="fr"><span>23</span><span>99</span></span> = 0.<span class="ol">23</span></span>
+    <span class="eq"><span class="fr"><span>3</span><span>8</span></span> = 0.375</span>
+    <span class="eq"><span class="fr"><span>1</span><span>6</span></span> = 0.1<span class="ol">6</span></span>
+  </div>
+</section>
+
+<main class="wrap">
+  <section id="view-investigate" data-v="investigate">
+    <div class="inv-layout">
+      <div class="rail" id="rail" role="group" aria-label="Investigations"></div>
+      <div class="steps" id="steps"></div>
+    </div>
+  </section>
+
+  <section id="view-explore" data-v="explore" hidden>
+    <div class="lab">
+      <div class="sheet">
+        <h2 class="sec">Fraction → decimal machine</h2>
+        <div class="lab-in">
+          <span class="stack"><input type="number" id="lab-n" min="0" max="99999" value="5" aria-label="Numerator"><hr><input type="number" id="lab-d" min="1" max="5000" value="14" aria-label="Denominator"></span>
+          <span class="muted">Try 1/7, 5/12, 7/40, 1/17…<br>Denominator up to 5000.</span>
+        </div>
+        <div class="big" id="lab-big"></div>
+        <dl class="facts" id="lab-facts"></dl>
+        <p class="notation">Notation: write the repeating block with a bar over it (0.1<span class="ol">6</span>) or a dot over its first and last digits. In this app you type it in brackets: <span class="mono">0.1(6)</span>, <span class="mono">0.(142857)</span>.</p>
+      </div>
+      <div class="sheet">
+        <h2 class="sec">Long division, step by step</h2>
+        <p class="muted" style="margin-bottom:10px">Each remainder × 10 is divided again. When a remainder comes back, the digits repeat. The highlighted row is where the loop closes.</p>
+        <div class="tbl"><table id="lab-steps"></table></div>
+      </div>
+    </div>
+    <div class="sheet" style="margin-top:20px">
+      <h2 class="sec">Table maker</h2>
+      <p class="muted" style="margin-bottom:12px">Generate lots of cases at once, then hunt for patterns. Terminating rows are tinted.</p>
+      <div class="row">
+        <select id="tm-mode" aria-label="Table type">
+          <option value="unit">Unit fractions 1/d</option>
+          <option value="over">n/d for n = 1 … d − 1</option>
+        </select>
+        <span id="tm-unit" class="row"><label>d from <input type="number" id="tm-a" value="2" min="2" max="500" style="width:5em"></label><label>to <input type="number" id="tm-b" value="25" min="2" max="500" style="width:5em"></label></span>
+        <span id="tm-over" class="row" hidden><label>d = <input type="number" id="tm-d" value="13" min="2" max="60" style="width:5em"></label></span>
+      </div>
+      <div class="tbl" style="margin-top:12px"><table id="tm-table"></table></div>
+    </div>
+  </section>
+
+  <section id="view-quickfire" data-v="quickfire" hidden>
+    <div class="sheet qf">
+      <div class="score"><span>Correct <b id="qf-right">0</b> / <b id="qf-total">0</b></span><span>Streak <b id="qf-streak">0</b></span><span>Best streak <b id="qf-best">0</b></span></div>
+      <div class="row" style="margin-bottom:6px"><span class="chip" id="qf-kind"></span></div>
+      <div class="qprompt" id="qf-prompt"></div>
+      <div id="qf-input"></div>
+      <div id="qf-msg"></div>
+      <div class="row" style="margin-top:14px"><button class="btn" id="qf-check">Check</button><button class="btn ghost" id="qf-next">New question</button></div>
+      <p class="notation">Type recurring decimals with brackets around the repeating block: <span class="mono">0.(3)</span>, <span class="mono">0.08(3)</span>. Type fractions as <span class="mono">3/8</span>. Fraction answers must be in simplest form.</p>
+    </div>
+  </section>
+
+  <section id="view-rubric" data-v="rubric" hidden>
+    <div class="inv-head" style="margin-bottom:14px"><h2>What 7–8 looks like</h2><p>Tick each look-for once your write-up shows it. Your ticks are saved in this browser.</p></div>
+    <div class="rub" id="rub"></div>
+    <div class="sheet" style="margin-top:24px">
+      <h2 class="sec">Write-up planner</h2>
+      <p class="muted" style="margin-bottom:12px">A logical structure earns marks in Criterion C (v). Plan your report section by section, then copy it into your document.</p>
+      <div class="row" style="margin-bottom:14px">
+        <label>Investigation <select id="pl-inv"></select></label>
+        <button class="btn ghost small" id="pl-pull">Bring in my rule from the investigation</button>
+        <button class="btn small" id="pl-copy">Copy write-up</button>
+      </div>
+      <div class="planner" id="planner"></div>
+      <div id="pl-msg"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- storage ---------- */
+const KEY='fdp-practice-v1';
+let S={done:{},inp:{},wr:{},rub:{},rep:{},qfBest:0,inv:0};
+try{const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+/* ---------- maths ---------- */
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a};
+const bgcd=(a,b)=>{if(a<0n)a=-a;if(b<0n)b=-b;while(b){[a,b]=[b,a%b]}return a};
+function factor(n){const f=[];let p=2;while(n>1&&p*p<=n){while(n%p===0){f.push(p);n/=p}p++}if(n>1)f.push(n);return f}
+const SUP={0:'⁰',1:'¹',2:'²',3:'³',4:'⁴',5:'⁵',6:'⁶',7:'⁷',8:'⁸',9:'⁹'};
+function factorHTML(n){if(n===1)return'1';const c={};factor(n).forEach(p=>c[p]=(c[p]||0)+1);return Object.keys(c).map(p=>p+(c[p]>1?String(c[p]).replace(/\d/g,d=>SUP[d]):'')).join(' × ')}
+function onlyTwoFive(d){return factor(d).every(p=>p===2||p===5)}
+function expand(n,d){const I=Math.floor(n/d);let r=n%d;const dig=[],seen=new Map(),steps=[];
+  while(r!==0&&!seen.has(r)){seen.set(r,dig.length);const x=r*10,q=Math.floor(x/d),nr=x%d;steps.push({r,x,q,nr});dig.push(q);r=nr}
+  const term=r===0,start=term?dig.length:seen.get(r);
+  return{I,pre:dig.slice(0,start).join(''),rep:dig.slice(start).join(''),term,steps,loopR:term?null:r,loopAt:start}}
+const partsHTML=(I,pre,rep)=>(!pre&&!rep)?String(I):`${I}.${pre}${rep?`<span class="ol">${rep}</span>`:''}`;
+const decHTML=(n,d)=>{const e=expand(n,d);return partsHTML(e.I,e.pre,e.rep)};
+const decText=(n,d)=>{const e=expand(n,d);return(!e.pre&&!e.rep)?String(e.I):`${e.I}.${e.pre}${e.rep?`(${e.rep})`:''}`};
+const dotHTML=(n,d)=>{const e=expand(n,d);if(!e.rep)return decHTML(n,d);const r=e.rep;const dotted=r.length===1?r+'̇':r[0]+'̇'+r.slice(1,-1)+r.slice(-1)+'̇';return `${e.I}.${e.pre}${dotted}`};
+const fr=(n,d)=>`<span class="fr"><span>${n}</span><span>${d}</span></span>`;
+const sfr=(n,d)=>{const g=gcd(n,d);return fr(n/g,d/g)};
+function parseDec(s){s=String(s).trim().replace(/\s+/g,'').replace(/,/g,'.');
+  if(/\.\.\.|…/.test(s))return{err:'dots'};
+  const m=s.match(/^(\d*)(?:\.(\d*)(?:[(\[](\d+)[)\]])?)?$/);
+  if(!m||s===''||s==='.')return{err:'format'};
+  const I=m[1]||'0',A=m[2]||'',B=m[3]||'';
+  if(!m[1]&&!A&&!B)return{err:'format'};
+  let num,den;
+  if(B){num=BigInt(I+A+B)-BigInt(I+A);den=(10n**BigInt(B.length)-1n)*10n**BigInt(A.length)}
+  else{num=BigInt(I+A);den=10n**BigInt(A.length)}
+  return{num,den,B}}
+function parseFrac(s){s=String(s).trim().replace(/\s+/g,'');let m=s.match(/^(\d+)\/(\d+)$/);
+  if(m){const den=BigInt(m[2]);if(den===0n)return{err:'zero'};return{num:BigInt(m[1]),den}}
+  m=s.match(/^\d+$/);if(m)return{num:BigInt(s),den:1n};return{err:'format'}}
+const eq=(a,b,n,d)=>a*BigInt(d)===b*BigInt(n);
+function previewDec(s){const p=parseDec(s);if(p.err||!s.trim())return'';const m=String(s).trim().replace(/\s+/g,'').replace(/,/g,'.').match(/^(\d*)(?:\.(\d*)(?:[(\[](\d+)[)\]])?)?$/);return 'You wrote: '+partsHTML(m[1]||'0',m[2]||'',m[3]||'')}
+
+/* answer checking: returns {ok, why} */
+function check(spec,val){val=String(val??'').trim();
+  if(!val)return{ok:false,why:'empty'};
+  if(spec.t==='dec'){const p=parseDec(val);if(p.err)return{ok:false,why:p.err};
+    if(eq(p.num,p.den,spec.n,spec.d))return{ok:true};
+    const e=expand(spec.n,spec.d);if(!e.term&&!p.B)return{ok:false,why:'rounded'};return{ok:false}}
+  if(spec.t==='frac'){const p=parseFrac(val);if(p.err)return{ok:false,why:'fracfmt'};
+    if(!eq(p.num,p.den,spec.n,spec.d))return{ok:false};
+    if(spec.simp&&bgcd(p.num,p.den)!==1n)return{ok:false,why:'simplify'};return{ok:true}}
+  if(spec.t==='tr'){return{ok:val===(onlyTwoFive(spec.d/gcd(spec.n,spec.d))?'T':'R')}}
+  if(spec.t==='int'){return{ok:Number(val)===spec.v}}
+  return{ok:false}}
+function ansHTML(spec){
+  if(spec.t==='dec')return decHTML(spec.n,spec.d);
+  if(spec.t==='frac')return spec.simp?sfr(spec.n,spec.d):fr(spec.n,spec.d);
+  if(spec.t==='tr')return onlyTwoFive(spec.d/gcd(spec.n,spec.d))?'T':'R';
+  if(spec.t==='int')return String(spec.v)}
+const WHY={dots:'Don’t use “…”. Put the repeating digits in brackets, e.g. 0.1(6).',format:'Some decimals aren’t in a form I can read. Use digits, one point, and brackets for the repeating block: 0.08(3).',rounded:'A recurring decimal never stops, so a rounded answer isn’t exact. Show the repeating block in brackets.',fracfmt:'Type fractions as numerator/denominator, e.g. 3/8.',simplify:'Equivalent, but not in simplest form. Divide top and bottom by their highest common factor.'};
+
+/* ---------- investigation data ---------- */
+const D=(n,d)=>({t:'dec',n,d}),F=(n,d,simp=true)=>({t:'frac',n,d,simp}),TR=(n,d)=>({t:'tr',n,d}),N=v=>({t:'int',v});
+const dp=(I,pre,rep)=>`<span class="mono">${partsHTML(I,pre,rep)}</span>`;
+const INV=[
+{id:'term',title:'Terminating or recurring?',blurb:'Some fractions give decimals that stop. Others repeat forever. Can you tell which from the fraction alone?',steps:[
+ {type:'table',strand:'B i',title:'Collect the data',intro:'Divide (by hand first, then check) to write each unit fraction as a decimal. Mark it T if it terminates or R if it recurs. The prime factorisation of each denominator is given.',
+  cols:['Fraction','Denominator in primes','Decimal','T or R?'],rows:[2,3,4,5,6,8,10,12,15,16,20,25].map(d=>[fr(1,d),`<span class="mono">${factorHTML(d)}</span>`,D(1,d),TR(1,d)])},
+ {type:'choice',strand:'B ii',title:'Spot the pattern',q:'Look only at the rows you marked T. What do their denominators have in common?',correct:1,opts:[
+  ['They are all even numbers.','Check 6 and 12: both even, both recurring. And 5 and 25 are odd but terminate.'],
+  ['Their only prime factors are 2 and/or 5.','Yes. 2, 4, 8, 16 are powers of 2; 5 and 25 are powers of 5; 10 and 20 mix 2s and 5s. Every recurring denominator has a 3 in it.'],
+  ['They are all factors of 100.','Close, but 8 and 16 are not factors of 100 and they still terminate.'],
+  ['They are all smaller than 20.','Size isn’t the pattern: 3 and 6 are small but recur, while 25 terminates.']]},
+ {type:'write',strand:'B ii · C i',title:'State the general rule',q:'Write a general rule that tells you, without dividing, whether a fraction a/b gives a terminating decimal. Use correct mathematical terms and, if you can, symbols.',
+  kw:[['denominator',['denominator']],['prime factor(s)',['prime']],['2',['\\b2\\b','two','2\\^','2ᵐ']],['5',['\\b5\\b','five','5\\^','5ⁿ']],['simplest form',['simplest','lowest terms','simplif','reduc']]],
+  model:'A fraction a/b <b>in simplest form</b> gives a terminating decimal exactly when the prime factorisation of the denominator b contains only 2s and/or 5s, that is b = 2ᵐ × 5ⁿ for whole numbers m, n ≥ 0. If b has any other prime factor (3, 7, 11 …) the decimal recurs.'},
+ {type:'table',strand:'B iii',title:'Verify on new fractions',intro:'Simplify each fraction first, use your rule to predict T or R, and only then divide to check. Watch out: two of these are traps if you forget to simplify.',
+  cols:['Fraction','Simplest form','Prediction (T/R)','Decimal (check)'],rows:[[7,40],[5,14],[9,12],[11,125],[4,15],[21,30]].map(([n,d])=>[fr(n,d),F(n,d),TR(n,d),D(n,d)])},
+ {type:'choice',strand:'B iii',title:'Justify why it always works',q:'Which explanation proves the rule for every fraction, not just the ones you tested?',correct:2,opts:[
+  ['It worked for every fraction in my tables, so it is always true.','That is verification, not justification. Examples give evidence but cannot show the rule works for every fraction.'],
+  ['2 and 5 are the smallest prime numbers, so they divide nicely.','3 is also a small prime, yet 1/3 recurs. The size of the prime is not the reason.'],
+  ['A terminating decimal is a fraction over 10, 100, 1000 …, and 10ᵏ = 2ᵏ × 5ᵏ. We can scale b up to a power of 10 only if b has no prime factors except 2 and 5. Any other prime can never divide a power of 10.','Correct. This uses place value to explain why, so it covers every fraction. Example: 3/40 = 3/(2³ × 5) = (3 × 25)/(2³ × 5³) = 75/1000 = 0.075.'],
+  ['Even denominators always divide evenly into decimals.','1/6 has an even denominator and recurs, so this isn’t true.']]},
+ {type:'table',strand:'B i · extension',title:'Extension: how many decimal places?',intro:'Every one of these terminates. Count the decimal places and compare with the powers of 2 and 5 in the denominator.',
+  cols:['Fraction','Denominator in primes','Decimal','Decimal places'],rows:[[1,16],[3,40],[1,125],[7,80],[9,50]].map(([n,d])=>[fr(n,d),`<span class="mono">${factorHTML(d)}</span>`,D(n,d),N(expand(n,d).pre.length)])},
+ {type:'choice',strand:'B ii · extension',title:'A rule for the number of places',q:'For a fraction in simplest form with denominator 2ᵐ × 5ⁿ, the number of decimal places is…',correct:1,opts:[
+  ['m + n','Test it: 3/40 has 40 = 2³ × 5¹, so m + n = 4, but 0.075 has 3 places.'],
+  ['the larger of m and n','Yes. You need 10ᵏ with k big enough to cover both powers, so k = max(m, n). 7/80: 80 = 2⁴ × 5 → 4 places (0.0875).'],
+  ['the smaller of m and n','Test it: 1/16 = 2⁴ has smaller power 0, but 0.0625 has 4 places.'],
+  ['the number of digits in the denominator','1/125 has 3 digits and 3 places, but 1/16 has 2 digits and 4 places.']]}
+]},
+{id:'nines',title:'Ninths and nines',blurb:'What happens when the denominator is 9, 99 or 999? Use the pattern to turn any recurring decimal back into a fraction.',steps:[
+ {type:'table',strand:'B i',title:'Collect the data',intro:'Write each fraction as a decimal. Put the repeating block in brackets.',
+  cols:['Fraction','Decimal'],rows:[[1,9],[4,9],[7,9],[1,99],[5,99],[23,99],[61,99],[1,999],[107,999],[450,999]].map(([n,d])=>[fr(n,d),D(n,d)])},
+ {type:'choice',strand:'B ii',title:'Spot the pattern',q:'Compare each numerator with its repeating block. What do you notice?',correct:0,opts:[
+  ['The numerator is the repeating block. Over 9 it fills 1 digit, over 99 it fills 2 digits (5/99 = 0.(05)), over 999 it fills 3 digits.','Yes. The number of nines tells you how many digits are in the repeating block.'],
+  ['The decimal is the numerator divided by 100.','23/100 = 0.23 stops; 23/99 = 0.232323… recurs. They are different numbers.'],
+  ['The repeating block is the numerator times 9.','4/9 = 0.(4), not 0.(36).'],
+  ['The decimal always has as many digits as the denominator.','All of these decimals go on forever, so they have infinitely many digits.']]},
+ {type:'table',strand:'B ii',title:'Predict from the pattern',intro:'Use the pattern in reverse. Write each recurring decimal as a fraction with 9, 99 or 999 as the denominator (no need to simplify yet).',
+  cols:['Decimal','Fraction'],rows:[[['0','','58'],58,99],[['0','','8'],8,9],[['0','','304'],304,999],[['0','','07'],7,99]].map(([p,n,d])=>[dp(...p),F(n,d,false)])},
+ {type:'write',strand:'B ii · C i',title:'State the general rule',q:'Describe a general rule for writing a recurring decimal of the form 0.(block) as a fraction.',
+  kw:[['repeating / recurring block',['repeat','recur','block','period']],['number of digits',['digit']],['nines',['9','nine']],['numerator',['numerator','top']],['denominator',['denominator','bottom']]],
+  model:'If a decimal is 0.(block) and the repeating block has k digits, then it equals the block over a number made of k nines: 0.(block) = block / (10ᵏ − 1). For example 0.(36) = 36/99 = 4/11. Then simplify the fraction.'},
+ {type:'table',strand:'B iii',title:'Verify, then simplify fully',intro:'Use your rule, then give each fraction in simplest form. Check one with the Explore lab or a calculator.',
+  cols:['Decimal','Simplest fraction'],rows:[[['0','','36'],4,11],[['0','','185'],5,27],[['0','','6'],2,3],[['0','','81'],9,11],[['0','','142857'],1,7]].map(([p,n,d])=>[dp(...p),F(n,d)])},
+ {type:'choice',strand:'B iii',title:'Justify the rule',q:'Which argument proves that 0.(36) = 36/99?',correct:3,opts:[
+  ['36 ÷ 99 on a calculator shows 0.363636…','That checks one case. It shows the answer is right, not why the rule works for every block.'],
+  ['99 is nearly 100, and 36/100 = 0.36.','“Nearly” is not a proof, and 0.36 is a different number from 0.363636…'],
+  ['Because 9 is the largest digit.','This doesn’t connect to how the decimal is built.'],
+  ['Let x = 0.363636… Then 100x = 36.363636… Subtract: 100x − x = 36, so 99x = 36 and x = 36/99.','Correct. Multiplying by 10ᵏ shifts the block one full cycle so the tails cancel. The same steps work for any k-digit block, giving block/(10ᵏ − 1).']]},
+ {type:'choice',strand:'B iii · extension',title:'Push the rule to its edge',q:'Apply the rule to 0.(9) = 0.999… What does it tell you?',correct:1,opts:[
+  ['0.(9) is just less than 1.','By the rule, 0.(9) = 9/9. There is no number between 0.999… and 1, so they are equal.'],
+  ['0.(9) = 9/9 = 1, so 0.999… and 1 are the same number.','Yes. Check with algebra: x = 0.999…, 10x = 9.999…, so 9x = 9 and x = 1.'],
+  ['The rule doesn’t work for 9s.','It does work; the result just surprises people.'],
+  ['0.(9) = 9/10.','9/10 = 0.9, which stops. The rule uses nines in the denominator, not tens.']]}
+]},
+{id:'sevenths',title:'Sevenths: a cyclic number',blurb:'1/7 = 0.142857142857… What happens to 2/7, 3/7 … 6/7? Long-division remainders explain everything.',steps:[
+ {type:'table',strand:'B i',title:'Collect the data',intro:'Write each seventh as a decimal.',cols:['Fraction','Decimal'],rows:[1,2,3,4,5,6].map(n=>[fr(n,7),D(n,7)])},
+ {type:'choice',strand:'B ii',title:'Spot the pattern',q:'What do you notice about the six decimals?',correct:2,opts:[
+  ['Each one doubles the one before.','2/7 = 0.(285714) is double 1/7, but 3/7 isn’t double 2/7. Look at the digits instead.'],
+  ['They all have different repeating blocks.','Look again: the same six digits appear every time.'],
+  ['They all use the same six digits 142857 in the same cyclic order, each starting at a different digit.','Yes. 142857 is called a cyclic number. 3/7 = 0.(428571) starts at the 4.'],
+  ['Only the first digit changes.','The whole block rotates, not just the first digit.']]},
+ {type:'table',strand:'B i',title:'Use long division to dig deeper',intro:'Divide 1 by 7. At each step multiply the remainder by 10, divide by 7, and record the digit and the new remainder.',
+  cols:['Step','Divide','Digit','Remainder'],rows:[['1','10 ÷ 7',1,3],['2','30 ÷ 7',4,2],['3','20 ÷ 7',2,6],['4','60 ÷ 7',8,4],['5','40 ÷ 7',5,5],['6','50 ÷ 7',7,1]].map(([s,dv,q,r])=>[s,`<span class="mono">${dv}</span>`,N(q),N(r)])},
+ {type:'choice',strand:'B ii',title:'What the remainders show',q:'After step 6 the remainder is 1 again. What happens next, and why?',correct:0,opts:[
+  ['We are back to 10 ÷ 7, so the same six digits repeat forever. The block has 6 digits because remainders 1–6 each appeared once before one came back.','Correct. A remainder that repeats forces the digits to repeat.'],
+  ['The division ends because the remainder is 1.','It only ends when the remainder is 0.'],
+  ['The next digit is 0.','10 ÷ 7 = 1 r 3 again, so the next digit is 1.'],
+  ['The pattern changes because we have used all the digits.','Long division only depends on the current remainder, so it repeats exactly.']]},
+ {type:'write',strand:'B ii · C i',title:'State the general rule',q:'Describe a rule for writing n/7 (n = 1 to 6) as a decimal using 1/7 = 0.(142857), without dividing again.',
+  kw:[['142857 / same digits',['142857','same']],['start / begin',['start','begin','first']],['order / cycle / rotate',['order','cycl','rotat','shift','move']]],
+  model:'n/7 = 0.(abcdef), where the repeating block is 142857 rotated so it starts at the n-th smallest of its digits. The digits in size order are 1, 2, 4, 5, 7, 8, so 1/7 starts at 1, 2/7 at 2, 3/7 at 4, 4/7 at 5, 5/7 at 7 and 6/7 at 8. Example: 5/7 = 0.(714285).'},
+ {type:'choice',strand:'B iii',title:'Justify the rule',q:'Why must every n/7 use the same cycle as 1/7?',correct:1,opts:[
+  ['Because 7 is a prime number.','11 is also prime, but 1/11 and 2/11 have different blocks (0.(09) and 0.(18)). Primality alone isn’t the reason.'],
+  ['Dividing n by 7 starts with remainder n. All of 1–6 appear in the 1/7 cycle, so n/7 simply joins that cycle at the point where the remainder is n.','Correct. That’s why 3/7 starts where the remainder in 1/7 is 3: after the first digit 1, giving 0.(428571).'],
+  ['Because 142857 × 7 = 999999.','True and interesting, but it doesn’t explain the rotation on its own.'],
+  ['Because I checked all six fractions.','That verifies the six cases. A justification explains why it has to happen.']]},
+ {type:'table',strand:'B iii · extension',title:'How long can a repeating block be?',intro:'Use the Explore lab to find the length of the repeating block of each unit fraction, and compare it with d − 1.',
+  cols:['Fraction','d − 1','Length of repeating block'],rows:[3,11,13,17].map(d=>[fr(1,d),N(d-1),N(expand(1,d).rep.length)])},
+ {type:'choice',strand:'B ii · B iii',title:'General rule for the block length',q:'Which statement is true for every fraction 1/d that recurs?',correct:3,opts:[
+  ['The block always has exactly d − 1 digits.','1/13 has a block of 6, not 12, and 1/11 has a block of 2.'],
+  ['The block always has d digits.','There are only d − 1 non-zero remainders, so this is never possible.'],
+  ['The block length is always even.','1/3 = 0.(3) has a block of length 1.'],
+  ['The block has at most d − 1 digits, because only remainders 1, 2, …, d − 1 are possible, so one must repeat within d − 1 steps.','Correct. 1/7 and 1/17 reach the maximum; 1/11 and 1/13 repeat sooner.']]}
+]},
+{id:'elevenths',title:'Elevenths',blurb:'1/11, 2/11, 3/11 … each has a two-digit repeating block. Find a rule that predicts it and link it to the nines rule.',steps:[
+ {type:'table',strand:'B i',title:'Collect the data',intro:'Write each fraction as a decimal and calculate 9 × n.',cols:['Fraction','Decimal','9 × n'],rows:[1,2,3,4,5,8].map(n=>[fr(n,11),D(n,11),N(9*n)])},
+ {type:'choice',strand:'B ii',title:'Spot the pattern',q:'Compare the repeating block of n/11 with 9 × n.',correct:2,opts:[
+  ['The block is n followed by n, like 0.(22) for 2/11.','2/11 = 0.181818…, not 0.2222…'],
+  ['The block is 11 × n.','3/11 = 0.(27), but 11 × 3 = 33.'],
+  ['The block is 9 × n, written as two digits (1/11 = 0.(09)).','Yes: 4/11 = 0.(36) and 9 × 4 = 36.'],
+  ['The block is always 09 shifted along.','The digits change, though they always add to 9. That’s a second pattern worth noting!']]},
+ {type:'write',strand:'B ii · C i',title:'State the general rule',q:'Write a general rule for n/11 (n = 1 to 10) as a decimal. Include an example.',
+  kw:[['9 / nine',['9','nine']],['multiply',['multipl','times','×','\\*','x\\s?n','product']],['two digits',['two','2 digit','2-digit','digits']],['repeat / recur',['repeat','recur','bracket','bar','block']]],
+  model:'For n = 1, 2, …, 10: n/11 = 0.(9n), where the repeating block is 9 × n written as two digits. Example: 7/11 = 0.(63) because 9 × 7 = 63, and 1/11 = 0.(09).'},
+ {type:'table',strand:'B iii',title:'Verify on new cases',intro:'Predict each decimal with your rule, then check by division.',cols:['Fraction','Decimal'],rows:[6,7,10].map(n=>[fr(n,11),D(n,11)])},
+ {type:'choice',strand:'B iii',title:'Justify the rule',q:'Which argument proves the elevenths rule?',correct:0,opts:[
+  ['n/11 = 9n/99, since 11 × 9 = 99. By the nines rule, a two-digit number over 99 is that number repeating, so n/11 = 0.(9n).','Correct. Linking to a rule you already proved is a strong justification.'],
+  ['Because 11 is two ones, the block has two digits.','This isn’t a mathematical reason, and it doesn’t predict the digits.'],
+  ['My calculator showed it for 6/11 and 7/11.','That verifies two cases; it doesn’t explain why.'],
+  ['Because the digits always add up to 9.','True, but it’s another pattern, not a reason for this one.']]},
+ {type:'table',strand:'B i · extension',title:'Extension: improper fractions',intro:'Split each into a whole number plus a fraction of eleven (13/11 = 1 + 2/11), then use the rule.',cols:['Fraction','Decimal'],rows:[[13,11],[25,11],[32,11]].map(([n,d])=>[fr(n,d),D(n,d)])}
+]},
+{id:'halves',title:'Halving sums',blurb:'Add 1/2 + 1/4 + 1/8 + … one term at a time. Track the totals as fractions and decimals.',steps:[
+ {type:'table',strand:'B i',title:'Collect the data',intro:'Add the terms. Give each sum as a fraction in simplest form and as a decimal.',
+  cols:['Terms (n)','Sum','Fraction','Decimal'],rows:[1,2,3,4,5].map(n=>{const den=2**n;const terms=[];for(let k=1;k<=n;k++)terms.push(fr(1,2**k));return[`<span class="mono">${n}</span>`,terms.join(' + '),F(den-1,den),D(den-1,den)]})},
+ {type:'choice',strand:'B ii',title:'Spot the pattern',q:'What do you notice about the fractions?',correct:3,opts:[
+  ['The numerator goes up by 2 each time.','1, 3, 7, 15, 31: the jumps are 2, 4, 8, 16, so they double.'],
+  ['The fractions get smaller.','The sums get bigger: 0.5, 0.75, 0.875 …'],
+  ['The denominator is 2 × n.','For n = 4 the denominator is 16, not 8.'],
+  ['The denominator is 2ⁿ and the numerator is one less than the denominator.','Yes. After 4 terms: 15/16, with 16 = 2⁴.']]},
+ {type:'write',strand:'B ii · C i',title:'State the general rule',q:'Write a general rule for the sum Sₙ of the first n terms. Give it in words and in symbols.',
+  kw:[['2ⁿ / power of 2',['2\\^','2ⁿ','power','2n']],['n (number of terms)',['\\bn\\b','terms']],['one less / subtract',['minus','less','subtract','−','-']]],
+  model:'The sum of the first n terms is Sₙ = (2ⁿ − 1) / 2ⁿ, which can also be written Sₙ = 1 − 1/2ⁿ. In words: the denominator is 2 to the power n and the numerator is one less than the denominator.'},
+ {type:'table',strand:'B iii',title:'Verify with larger n',intro:'Predict with your rule, then check one by adding or with a calculator.',
+  cols:['n','Fraction','Decimal'],rows:[[6,true],[8,false],[10,false]].map(([n,withDec])=>[`<span class="mono">${n}</span>`,F(2**n-1,2**n),withDec?D(2**n-1,2**n):'<span class="muted">—</span>'])},
+ {type:'choice',strand:'B iii',title:'Justify the rule',q:'Which argument shows why Sₙ = 1 − 1/2ⁿ?',correct:1,opts:[
+  ['It matched for n = 1 to 10.','That is strong verification, but not a justification.'],
+  ['After each term the gap left to 1 is exactly the next term’s size, and adding it halves the gap. The gap goes 1/2, 1/4, 1/8 …, so after n terms it is 1/2ⁿ and Sₙ = 1 − 1/2ⁿ.','Correct. Picture a square: shade half, then half of what is left, and so on. The unshaded part is always the last term added.'],
+  ['Because halves are easy to add.','That isn’t a reason the formula holds.'],
+  ['Because 2ⁿ is even.','2ⁿ is even, but that doesn’t explain the numerator.']]},
+ {type:'choice',strand:'B ii · extension',title:'Will the sum ever reach 1?',q:'What happens to Sₙ as n gets larger and larger?',correct:2,opts:[
+  ['It reaches 1 when n = 100.','S₁₀₀ = 1 − 1/2¹⁰⁰, which is still less than 1.'],
+  ['It goes past 1 eventually.','Each term only fills part of the remaining gap, so it can never pass 1.'],
+  ['It never equals 1 for any finite n, but it gets as close to 1 as you like, because 1/2ⁿ gets as small as you like.','Yes. Mathematicians say the infinite sum converges to 1. And each Sₙ is a terminating decimal, because its denominator is a power of 2.'],
+  ['It stops growing after about 10 terms.','It always grows, just by smaller and smaller amounts.']]}
+]}];
+
+/* ---------- investigations UI ---------- */
+const key=(i,s)=>`${INV[i].id}-${s}`;
+function progress(i){const st=INV[i].steps;return[st.filter((_,s)=>S.done[key(i,s)]).length,st.length]}
+function renderRail(){$('#rail').innerHTML=INV.map((v,i)=>{const[a,b]=progress(i);return`<button type="button" data-i="${i}" aria-pressed="${i===S.inv}"><b>${esc(v.title)}</b><small class="muted num">${a} / ${b} steps done</small><span class="prog"><i style="width:${a/b*100}%"></i></span></button>`}).join('')}
+function cellHTML(c,id){if(typeof c!=='object')return`<td>${c}</td>`;
+  const v=esc(S.inp[id]||'');
+  if(c.t==='tr')return`<td data-id="${id}"><select id="${id}" aria-label="T or R"><option value="">–</option><option value="T"${v==='T'?' selected':''}>T</option><option value="R"${v==='R'?' selected':''}>R</option></select></td>`;
+  const ph=c.t==='dec'?'0.(3)':c.t==='frac'?'a/b':'';
+  return`<td data-id="${id}"><input type="text" id="${id}" value="${v}" placeholder="${ph}" autocomplete="off" spellcheck="false" ${c.t==='int'?'inputmode="numeric" style="width:5em"':''}></td>`}
+function stepHTML(i,s){const st=INV[i].steps[s],k=key(i,s),done=!!S.done[k];
+  let body='';
+  if(st.type==='table'){
+    body=`${st.intro?`<p class="intro">${st.intro}</p>`:''}<div class="tbl"><table><thead><tr>${st.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${st.rows.map((r,ri)=>`<tr>${r.map((c,ci)=>cellHTML(c,`${k}-${ri}-${ci}`)).join('')}</tr>`).join('')}</tbody></table></div>
+    <div class="row" style="margin-top:12px"><button class="btn small" data-act="check">Check</button><button class="btn ghost small" data-act="reveal">Show answers</button></div><div class="out"></div>`}
+  else if(st.type==='choice'){
+    body=`<p class="q">${st.q}</p><div class="opts">${st.opts.map((o,oi)=>`<button type="button" class="opt${done&&oi===st.correct?' right':''}" data-act="opt" data-o="${oi}">${o[0]}</button>`).join('')}</div><div class="out">${done?`<div class="msg good">${st.opts[st.correct][1]}</div>`:''}</div>`}
+  else if(st.type==='write'){
+    body=`<p class="q">${st.q}</p><textarea id="${k}-w" placeholder="A fraction in simplest form …">${esc(S.wr[k]||'')}</textarea>
+    <div class="row" style="margin-top:10px"><button class="btn small" data-act="kw">Check my wording</button><button class="btn ghost small" data-act="model">Compare with a model answer</button></div><div class="out"></div><div class="model" hidden><b>Model rule.</b> ${st.model}</div>`}
+  return`<article class="step" data-i="${i}" data-s="${s}"><header><span class="n">Step ${s+1}</span><h3>${st.title}</h3><span class="chip">${st.strand}</span>${done?'<span class="chip done">✓ done</span>':''}</header>${body}</article>`}
+function renderInv(){const i=S.inv,v=INV[i];
+  $('#steps').innerHTML=`<div class="inv-head"><h2>${esc(v.title)}</h2><p>${v.blurb}</p></div>`+v.steps.map((_,s)=>stepHTML(i,s)).join('');
+  renderRail()}
+function markDone(i,s){if(S.done[key(i,s)])return;S.done[key(i,s)]=true;save();
+  const art=$(`.step[data-i="${i}"][data-s="${s}"]`);if(art&&!$('.chip.done',art))$('header',art).insertAdjacentHTML('beforeend','<span class="chip done">✓ done</span>');renderRail()}
+
+$('#rail').addEventListener('click',e=>{const b=e.target.closest('button[data-i]');if(!b)return;S.inv=+b.dataset.i;save();renderInv();window.scrollTo({top:$('#steps').offsetTop-90,behavior:'smooth'})});
+$('#steps').addEventListener('input',e=>{const t=e.target;if(t.id&&t.closest('td')){S.inp[t.id]=t.value;t.closest('td').classList.remove('ok','no');save()}
+  if(t.tagName==='TEXTAREA'){S.wr[t.id.replace(/-w$/,'')]=t.value;save()}});
+$('#steps').addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;
+  const art=b.closest('.step'),i=+art.dataset.i,s=+art.dataset.s,st=INV[i].steps[s],k=key(i,s),out=$('.out',art);
+  if(b.dataset.act==='check'||b.dataset.act==='reveal'){
+    let right=0,total=0;const whys=new Set();
+    st.rows.forEach((r,ri)=>r.forEach((c,ci)=>{if(typeof c!=='object')return;total++;const id=`${k}-${ri}-${ci}`,td=$(`td[data-id="${id}"]`,art);
+      if(b.dataset.act==='reveal'){if(!$('.ans',td))td.insertAdjacentHTML('beforeend',`<div class="ans">${ansHTML(c)}</div>`);return}
+      const r2=check(c,$('#'+CSS.escape(id)).value);td.classList.toggle('ok',r2.ok);td.classList.toggle('no',!r2.ok);if(r2.ok)right++;else if(r2.why&&r2.why!=='empty')whys.add(r2.why)}));
+    if(b.dataset.act==='reveal'){out.innerHTML='<div class="msg warn">Answers shown under each box. Try to explain each one before moving on.</div>';return}
+    const tips=[...whys].map(w=>WHY[w]).join(' ');
+    out.innerHTML=right===total?`<div class="msg good">All ${total} correct. Nice work.</div>`:`<div class="msg ${right?'warn':'bad'}">${right} of ${total} correct. ${tips}</div>`;
+    if(right===total)markDone(i,s)}
+  if(b.dataset.act==='opt'){const o=+b.dataset.o;$$('.opt',art).forEach(x=>x.classList.remove('right','wrong'));
+    b.classList.add(o===st.correct?'right':'wrong');out.innerHTML=`<div class="msg ${o===st.correct?'good':'bad'}">${st.opts[o][1]}</div>`;if(o===st.correct)markDone(i,s)}
+  if(b.dataset.act==='kw'){const txt=$('textarea',art).value.toLowerCase();
+    if(txt.trim().split(/\s+/).length<8){out.innerHTML='<div class="msg warn">Write a full sentence or two first. A general rule needs to say when it applies and what happens.</div>';return}
+    const hits=st.kw.map(([lab,res])=>[lab,res.some(r=>new RegExp(r,'i').test(txt))]);
+    const n=hits.filter(h=>h[1]).length;
+    out.innerHTML=`<div class="kw">${hits.map(([l,h])=>`<span class="${h?'hit':'miss'}">${h?'✓':'○'} ${l}</span>`).join('')}</div><div class="msg ${n===hits.length?'good':'warn'}">${n===hits.length?'Your rule uses all the key ideas. Now check it against the model and make sure it’s precise.':'Missing ideas are shown with ○. A complete rule usually mentions all of them.'}</div>`;
+    if(n===hits.length)markDone(i,s)}
+  if(b.dataset.act==='model'){const m=$('.model',art);m.hidden=!m.hidden;b.textContent=m.hidden?'Compare with a model answer':'Hide model answer'}
+});
+
+/* ---------- explore lab ---------- */
+function renderLab(){let n=Math.max(0,Math.floor(+$('#lab-n').value||0)),d=Math.floor(+$('#lab-d').value||0);
+  if(d<1||d>5000||n>99999){$('#lab-big').innerHTML='<span class="muted" style="font-size:1rem">Choose a denominator from 1 to 5000.</span>';$('#lab-facts').innerHTML='';$('#lab-steps').innerHTML='';return}
+  const g=gcd(n,d)||1,sd=d/g,e=expand(n,d),pct=expand(100*n,d),T=onlyTwoFive(sd);
+  $('#lab-big').innerHTML=`${fr(n,d)} = ${decHTML(n,d)}`;
+  $('#lab-facts').innerHTML=`<dt>Simplest form</dt><dd>${n===0?'0':sfr(n,d)}</dd>
+   <dt>Denominator</dt><dd>${sd} = ${factorHTML(sd)}</dd>
+   <dt>Type</dt><dd><span class="verdict ${T?'T':'R'}">${T?'Terminating':'Recurring'}</span></dd>
+   <dt>${T?'Decimal places':'Repeating block'}</dt><dd>${T?e.pre.length:`${e.rep.length} digit${e.rep.length>1?'s':''}${e.pre?` (after ${e.pre.length} non-repeating)`:''}`}</dd>
+   <dt>Dot notation</dt><dd>${dotHTML(n,d)}</dd>
+   <dt>Bracket form</dt><dd>${decText(n,d)}</dd>
+   <dt>Percentage</dt><dd>${partsHTML(pct.I,pct.pre,pct.rep)}%</dd>`;
+  const shown=e.steps.slice(0,60);
+  $('#lab-steps').innerHTML=`<thead><tr><th>Step</th><th>Remainder × 10</th><th>÷ ${d}</th><th>Digit</th><th>New remainder</th></tr></thead><tbody>
+   <tr><td class="num">0</td><td colspan="4" class="mono">${n} ÷ ${d} = ${e.I} remainder ${n%d}</td></tr>
+   ${shown.map((s,k)=>`<tr${!e.term&&k===e.loopAt?' class="loop"':''}><td class="num">${k+1}</td><td class="num">${s.x}</td><td class="num">${s.x} ÷ ${d}</td><td class="num"><b>${s.q}</b></td><td class="num">${s.nr}</td></tr>`).join('')}
+   ${e.steps.length>60?`<tr><td colspan="5" class="muted">… ${e.steps.length-60} more steps</td></tr>`:''}
+   <tr><td colspan="5" class="${e.term?'':'muted'}">${e.term?'Remainder 0: the decimal terminates.':`Remainder ${e.loopR} already appeared at step ${e.loopAt+1}, so the digits repeat from there.`}</td></tr></tbody>`}
+['#lab-n','#lab-d'].forEach(s=>$(s).addEventListener('input',renderLab));
+
+function renderTM(){const mode=$('#tm-mode').value;$('#tm-unit').hidden=mode!=='unit';$('#tm-over').hidden=mode!=='over';
+  let rows=[];
+  if(mode==='unit'){let a=Math.max(2,Math.floor(+$('#tm-a').value||2)),b=Math.min(500,Math.floor(+$('#tm-b').value||2));if(b<a)[a,b]=[b,a];b=Math.min(b,a+79);for(let d=a;d<=b;d++)rows.push([1,d])}
+  else{const d=Math.min(60,Math.max(2,Math.floor(+$('#tm-d').value||2)));for(let n=1;n<d;n++)rows.push([n,d])}
+  $('#tm-table').innerHTML=`<thead><tr><th>Fraction</th><th>Denominator (simplest)</th><th>Decimal</th><th>Type</th><th>Block / places</th></tr></thead><tbody>${rows.map(([n,d])=>{const g=gcd(n,d),sd=d/g,e=expand(n,d),T=e.term;
+    return`<tr style="${T?'background:var(--good-bg)':''}"><td>${fr(n,d)}</td><td class="mono">${factorHTML(sd)}</td><td class="mono">${decHTML(n,d)}</td><td><span class="verdict ${T?'T':'R'}">${T?'T':'R'}</span></td><td class="num">${T?e.pre.length+' places':e.rep.length+' digits'}</td></tr>`}).join('')}</tbody>`}
+['#tm-mode','#tm-a','#tm-b','#tm-d'].forEach(s=>$(s).addEventListener('input',renderTM));
+
+/* ---------- quick fire ---------- */
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[Math.floor(Math.random()*a.length)];
+const cop=d=>{let n;do{n=rnd(1,d-1)}while(gcd(n,d)!==1);return n};
+const GEN=[
+ ()=>{const d=pick([2,3,4,5,6,7,8,9,11,12,15,16,20,25,27,33,37,40]),n=cop(d),T=onlyTwoFive(d);
+   return{kind:'Fraction → decimal',prompt:`Write ${fr(n,d)} as a decimal.`,spec:D(n,d),sol:`${fr(n,d)} = ${decHTML(n,d)}. Denominator ${d} = ${factorHTML(d)}: ${T?'only 2s and 5s, so it terminates.':'it has a prime factor other than 2 or 5, so it recurs.'}`}},
+ ()=>{const opts=[[3,8],[1,25],[5,4],[7,20],[3,40],[1,3],[4,9],[5,6],[7,12],[3,11],[5,27],[2,7],[1,15],[13,99]];const[n,d]=pick(opts);const e=expand(n,d);
+   let how;if(e.term)how=`${decHTML(n,d)} = ${e.I*10**e.pre.length+ +e.pre}/${10**e.pre.length}, then simplify.`;
+   else if(!e.pre)how=`The block ${e.rep} has ${e.rep.length} digit${e.rep.length>1?'s':''}, so it is ${+e.rep}/${'9'.repeat(e.rep.length)}, then simplify.`;
+   else{const a=e.pre.length,k=e.rep.length;how=`Let x = ${decHTML(n,d)}. Then 10${a+k>1?`<sup>${a+k}</sup>`:''}x − 10${a>1?`<sup>${a}</sup>`:''}x removes the repeating tail, giving ${10**(a+k)-10**a}x = ${+(e.pre+e.rep)-+e.pre}. Then simplify.`}
+   return{kind:'Decimal → fraction',prompt:`Write <span class="mono">${decHTML(n,d)}</span> as a fraction in simplest form.`,spec:F(n,d),sol:`${how} Answer: ${sfr(n,d)}.`}},
+ ()=>{const d=pick([6,12,14,15,18,20,24,28,30,35,40,45,48,50,56,60,75,80]);let n=rnd(1,d-1);if(Math.random()<.5){const fs=factor(d).filter(p=>p!==2&&p!==5);if(fs.length){const p=fs[0];n=p*rnd(1,Math.max(1,Math.floor((d-1)/p)))}}
+   const g=gcd(n,d),sd=d/g,T=onlyTwoFive(sd);
+   return{kind:'Predict: terminating or recurring?',prompt:`Without dividing, will ${fr(n,d)} give a terminating or a recurring decimal?`,spec:TR(n,d),tr:true,sol:`${g>1?`Simplify first: ${fr(n,d)} = ${sfr(n,d)}. `:''}Denominator ${sd} = ${factorHTML(sd)}: ${T?'only 2s and 5s → terminating':'another prime factor → recurring'} (${decHTML(n,d)}).`}},
+ ()=>{const d=pick([3,7,9,11,13,17,19,21,27,37,41]),k=expand(1,d).rep.length;
+   return{kind:'Length of the repeating block',prompt:`How many digits are in the repeating block of ${fr(1,d)}?`,spec:N(k),sol:`${fr(1,d)} = ${decHTML(1,d)}, so the block has ${k} digit${k>1?'s':''}. The most it could have is d − 1 = ${d-1}.`}},
+ ()=>{const t=rnd(0,3);
+   if(t===0){const k=rnd(4,8);return{kind:'Continue the pattern',prompt:`${fr(1,9)} = 0.<span class="ol">1</span>, ${fr(2,9)} = 0.<span class="ol">2</span>, ${fr(3,9)} = 0.<span class="ol">3</span> … What is ${fr(k,9)}?`,spec:D(k,9),sol:`n/9 = 0.(n), so ${fr(k,9)} = ${decHTML(k,9)}.`}}
+   if(t===1){const k=rnd(4,10);return{kind:'Continue the pattern',prompt:`${fr(1,11)} = 0.<span class="ol">09</span>, ${fr(2,11)} = 0.<span class="ol">18</span>, ${fr(3,11)} = 0.<span class="ol">27</span> … What is ${fr(k,11)}?`,spec:D(k,11),sol:`n/11 = 0.(9n): 9 × ${k} = ${9*k}, so ${fr(k,11)} = ${decHTML(k,11)}.`}}
+   if(t===2){const k=rnd(2,6);return{kind:'Use the cyclic number',prompt:`${fr(1,7)} = 0.<span class="ol">142857</span>. Without dividing, write ${fr(k,7)} as a decimal.`,spec:D(k,7),sol:`Rotate 142857 to start at the ${['','1st','2nd','3rd','4th','5th','6th'][k]} smallest digit: ${fr(k,7)} = ${decHTML(k,7)}.`}}
+   const n=rnd(6,10),den=2**n;return{kind:'Continue the pattern',prompt:`${fr(1,2)} + ${fr(1,4)} + ${fr(1,8)} + … What is the sum of the first ${n} terms, as a fraction?`,spec:F(den-1,den),sol:`Sₙ = (2ⁿ − 1)/2ⁿ, so S<sub>${n}</sub> = ${fr(den-1,den)}.`}}
+];
+let Q=null,qr=0,qt=0,qs=0,answered=false;
+function newQ(){Q=pick(GEN)();answered=false;$('#qf-kind').textContent=Q.kind;$('#qf-prompt').innerHTML=Q.prompt;$('#qf-msg').innerHTML='';
+  if(Q.tr){$('#qf-input').innerHTML='<div class="row"><button class="btn ghost" data-tr="T">Terminating</button><button class="btn ghost" data-tr="R">Recurring</button></div>';$('#qf-check').hidden=true}
+  else{$('#qf-input').innerHTML=`<input type="text" id="qf-ans" autocomplete="off" spellcheck="false" placeholder="${Q.spec.t==='dec'?'e.g. 0.1(6)':Q.spec.t==='frac'?'e.g. 3/8':'a whole number'}" aria-label="Your answer"><div class="preview" id="qf-prev"></div>`;$('#qf-check').hidden=false;
+    const inp=$('#qf-ans');inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();answered?newQ():grade(inp.value)}});
+    if(Q.spec.t==='dec')inp.addEventListener('input',()=>{$('#qf-prev').innerHTML=previewDec(inp.value)});
+    try{inp.focus({preventScroll:true})}catch(e){}}}
+function grade(val){const r=check(Q.spec,val);
+  if(!r.ok&&(r.why==='empty'||r.why==='format'||r.why==='dots'||r.why==='fracfmt')){$('#qf-msg').innerHTML=`<div class="msg warn">${r.why==='empty'?'Type an answer first.':WHY[r.why]}</div>`;return}
+  if(answered)return;answered=true;qt++;if(r.ok){qr++;qs++}else qs=0;if(qs>S.qfBest){S.qfBest=qs;save()}
+  $('#qf-right').textContent=qr;$('#qf-total').textContent=qt;$('#qf-streak').textContent=qs;$('#qf-best').textContent=S.qfBest;
+  $('#qf-msg').innerHTML=`<div class="msg ${r.ok?'good':'bad'}">${r.ok?'Correct. ':(r.why&&WHY[r.why]?WHY[r.why]+' ':'Not quite. ')}${Q.sol}</div>`}
+$('#qf-input').addEventListener('click',e=>{const b=e.target.closest('[data-tr]');if(b)grade(b.dataset.tr)});
+$('#qf-check').addEventListener('click',()=>{const i=$('#qf-ans');if(i)grade(i.value)});
+$('#qf-next').addEventListener('click',newQ);
+$('#qf-best').textContent=S.qfBest;
+
+/* ---------- rubric & planner ---------- */
+const RUB=[
+ ['B i','Select and apply mathematical problem-solving techniques to discover complex patterns.',['My results are organised in a table with enough cases (8–10 or more) to see a pattern.','I chose techniques on purpose (division, prime factorisation, long-division remainders, algebra) and said why.','I tested cases that might break the pattern (unsimplified fractions, bigger denominators).']],
+ ['B ii','Describe patterns as relationships and/or general rules consistent with correct findings.',['I stated the rule in words and in symbols, e.g. b = 2ᵐ × 5ⁿ or Sₙ = 1 − 1/2ⁿ.','My rule agrees with every correct result in my tables.','I described a relationship that works for any case, not just a list of answers.']],
+ ['B iii','Verify and justify relationships and/or general rules.',['I tested my rule on new cases that I did not use to find it, and showed the working.','I said clearly whether each test agreed with the rule.','I explained why the rule must always work (place value, remainders or algebra), not just that it worked.']],
+ ['C i','Consistently use appropriate mathematical language (notation, symbols and terminology).',['I used bar or dot notation for recurring decimals.','I used terms correctly: numerator, denominator, terminating, recurring, prime factor, simplest form.','I never wrote 1/3 = 0.33. I used = only for exact values and ≈ for rounded ones.']],
+ ['C ii','Use appropriate forms of representation to consistently present information correctly.',['My tables have clear headings and are easy to read.','I used fractions, decimals, prime factorisations and diagrams where each helps.']],
+ ['C iii','Move effectively between different forms of representation.',['I converted both ways: fraction → decimal and recurring decimal → fraction.','I linked forms in one line, e.g. 3/8 = 375/1000 = 0.375.']],
+ ['C iv','Communicate complete and coherent lines of reasoning.',['Each step follows from the one before, so a reader can follow without asking me.','I showed working, not just answers, and ended with a clear conclusion.']],
+ ['C v','Organise information using a logical structure.',['My work has sections: aim, method, results, pattern, rule, verification, justification, conclusion.','Headings and numbered steps make things easy to find.']]];
+$('#rub').innerHTML=RUB.map(([c,d,items],ri)=>`<div class="sheet strand"><div><div class="code">Criterion ${c} · level 7–8</div><p class="desc">${d}</p></div><div>${items.map((t,ti)=>{const id=`rub-${ri}-${ti}`;return`<label for="${id}"><input type="checkbox" id="${id}"${S.rub[id]?' checked':''}> <span>${t}</span></label>`}).join('')}</div></div>`).join('');
+$('#rub').addEventListener('change',e=>{if(e.target.type==='checkbox'){S.rub[e.target.id]=e.target.checked;save()}});
+
+const SEC=[['Aim','What are you investigating? State the question in one or two sentences.'],['Method','Which techniques will you use (division, prime factors, long division, algebra) and why?'],['Results','Summarise your table(s). Which cases did you test?'],['Pattern','What do you notice? Describe the relationship in words.'],['General rule','State the rule in words and in symbols.'],['Verification','Test the rule on new cases. Show working and say whether each agrees.'],['Justification','Explain why the rule must always work.'],['Conclusion','Answer the aim. Mention any limits or extensions.']];
+$('#pl-inv').innerHTML=INV.map((v,i)=>`<option value="${i}">${esc(v.title)}</option>`).join('');
+function renderPlanner(){const i=+$('#pl-inv').value,R=S.rep[INV[i].id]||{};
+  $('#planner').innerHTML=SEC.map(([h,hint],k)=>`<div><label for="pl-${k}">${k+1}. ${h}<span class="hint">${hint}</span></label><textarea id="pl-${k}" data-k="${k}">${esc(R[k]||'')}</textarea></div>`).join('');$('#pl-msg').innerHTML=''}
+$('#pl-inv').addEventListener('change',renderPlanner);
+$('#planner').addEventListener('input',e=>{const t=e.target;if(t.dataset.k==null)return;const id=INV[+$('#pl-inv').value].id;(S.rep[id]=S.rep[id]||{})[t.dataset.k]=t.value;save()});
+$('#pl-pull').addEventListener('click',()=>{const i=+$('#pl-inv').value,s=INV[i].steps.findIndex(x=>x.type==='write'),txt=S.wr[key(i,s)];
+  if(!txt||!txt.trim()){$('#pl-msg').innerHTML='<div class="msg warn">You haven’t written a rule in this investigation yet. Do the “State the general rule” step first.</div>';return}
+  const ta=$('#pl-4');ta.value=txt;ta.dispatchEvent(new Event('input',{bubbles:true}));$('#pl-msg').innerHTML='<div class="msg good">Your rule is now in section 5.</div>'});
+$('#pl-copy').addEventListener('click',async()=>{const i=+$('#pl-inv').value;const txt=`${INV[i].title}\n\n`+SEC.map(([h],k)=>`${k+1}. ${h}\n${($('#pl-'+k).value||'').trim()||'(not written yet)'}`).join('\n\n');
+  try{await navigator.clipboard.writeText(txt);$('#pl-msg').innerHTML='<div class="msg good">Copied. Paste it into your document.</div>'}
+  catch(e){$('#pl-msg').innerHTML=`<div class="msg warn">Your browser blocked copying. Select the text below and copy it yourself.</div><textarea readonly style="margin-top:8px;min-height:200px">${esc(txt)}</textarea>`}});
+
+/* ---------- routing ---------- */
+const VIEWS=['investigate','explore','quickfire','rubric'];
+function route(){const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):'investigate';
+  $$('[data-v]').forEach(sec=>sec.hidden=sec.dataset.v!==v);
+  $$('nav.tabs a').forEach(a=>{if(a.dataset.view===v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  if(v==='quickfire'&&!Q)newQ()}
+window.addEventListener('hashchange',route);
+
+if(!(S.inv>=0&&S.inv<INV.length))S.inv=0;
+renderInv();renderLab();renderTM();renderPlanner();route();
+})();
+</script>
+</body>
+</html>
