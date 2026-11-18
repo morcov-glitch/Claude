@@ -225,7 +225,7 @@ footer .wrap{padding-block:20px;color:var(--muted);font-size:.85rem;display:flex
         <a class="rcard" href="#individual">
           <span class="rn">ROUND 1</span>
           <h3>Individual Challenge</h3>
-          <p>10 extended Year 8 problems drawn from a bank of 32: number, algebra, geometry, ratio and probability. Accuracy and reasoning count.</p>
+          <p>10 extended Year 8 problems drawn from a bank of <span id="bank-n">68</span>: number, algebra, geometry, ratio and probability. Practise everything or one topic at a time.</p>
           <span class="best" id="best-ind">No attempts yet</span>
           <span class="go">Start practice →</span>
         </a>
@@ -271,7 +271,7 @@ footer .wrap{padding-block:20px;color:var(--muted);font-size:.85rem;display:flex
       <div>
         <div class="eyebrow">Round 1</div>
         <h1>Individual Challenge</h1>
-        <p>Ten questions at extended Year 8 level. Type a number (fractions like <span class="num">5/36</span> are fine). 2 points for a correct answer, 1 point if you used the hint.</p>
+        <p>Ten questions at extended Year 8 level, mixed or from one topic. Type a number (fractions like <span class="num">5/36</span> are fine). 2 points for a correct answer, 1 point if you used the hint.</p>
       </div>
     </div>
     <div class="panel" id="ind-stage"></div>
@@ -374,11 +374,58 @@ const BANK=[
  {t:"Algebra",q:"If <span class=m>x + 1/x = 5</span>, what is the value of <span class=m>x² + 1/x²</span>?",a:23,h:"Square both sides of the first equation.",s:"(x + 1/x)² = x² + 2 + 1/x² = 25, so x² + 1/x² = <b>23</b>."},
  {t:"Counting",q:"At a party, each of 10 people shakes hands once with every other person. How many handshakes are there?",a:45,h:"Each person shakes 9 hands, but each handshake involves two people.",s:"10 × 9 ÷ 2 = <b>45</b>."},
  {t:"Percentages",q:"20% of a number equals 30% of 40. What is the number?",a:60,h:"Find 30% of 40 first.",s:"30% of 40 = 12. If 20% of n = 12 then n = 12 × 5 = <b>60</b>."},
- {t:"Algebra",q:"Two numbers have sum 17 and difference 5. What is their product?",a:66,h:"Add the two equations to find the larger number.",s:"x + y = 17 and x − y = 5 give 2x = 22, x = 11, y = 6. Product = <b>66</b>."}
+ {t:"Algebra",q:"Two numbers have sum 17 and difference 5. What is their product?",a:66,h:"Add the two equations to find the larger number.",s:"x + y = 17 and x − y = 5 give 2x = 22, x = 11, y = 6. Product = <b>66</b>."},
+ {t:"Number",q:"What is the smallest positive whole number that has exactly 5 factors?",a:16,h:"A number has an odd number of factors only if it is a square. Try squares in order.",s:"Factor counts: 4 → 3, 9 → 3, 16 → 1, 2, 4, 8, 16 = 5. Numbers with exactly 5 factors are p⁴, and the smallest is 2⁴ = <b>16</b>."},
+ {t:"Number",q:"What is the sum of all the prime numbers less than 30?",a:129,h:"List them carefully. Remember 2 is prime and 1 is not.",s:"2 + 3 + 5 + 7 + 11 + 13 + 17 + 19 + 23 + 29 = <b>129</b>."},
+ {t:"Number",q:"What is the largest prime factor of 2026?",a:1013,h:"2026 is even. Then test whether the other factor is prime. You only need to try primes up to its square root.",s:"2026 = 2 × 1013. √1013 ≈ 31.8, and none of 3, 5, 7, 11, 13, 17, 19, 23, 29, 31 divides 1013, so it is prime: <b>1013</b>."},
+ {t:"Number",q:"What is the smallest positive whole number n for which 120n is a perfect square?",a:30,h:"Write 120 as a product of primes. In a square, every prime appears an even number of times.",s:"120 = 2³ × 3 × 5. To make every power even, multiply by 2 × 3 × 5 = <b>30</b>. (120 × 30 = 3600 = 60².)"},
+ {t:"Number",q:"Write the recurring decimal <span class=m>0.272727…</span> as a fraction in its simplest form.",a:"3/11",h:"Let x = 0.2727…, then work out 100x − x.",s:"100x − x = 27, so 99x = 27 and x = 27/99 = <b>3/11</b>."},
+ {t:"Number",q:"Work out <span class=m>999 × 999</span> without a calculator.",a:998001,h:"999 = 1000 − 1. Expand (1000 − 1)².",s:"(1000 − 1)² = 1 000 000 − 2000 + 1 = <b>998 001</b>."},
+ {t:"Number",q:"Work out <span class=m>1/2 + 1/6 + 1/12 + 1/20 + 1/30</span>. Give a fraction.",a:"5/6",h:"1/6 = 1/2 − 1/3. Can you write each fraction as a difference like that?",s:"Each term is 1/n − 1/(n+1): (1 − 1/2) + (1/2 − 1/3) + … + (1/5 − 1/6). Everything cancels except 1 − 1/6 = <b>5/6</b>."},
+ {t:"Algebra",q:"Solve <span class=m>(x + 3)/4 = (x − 1)/2</span>. What is x?",a:5,h:"Multiply both sides by 4 to clear the fractions.",s:"x + 3 = 2(x − 1) = 2x − 2, so x = <b>5</b>."},
+ {t:"Algebra",q:"If <span class=m>3x + 2y = 18</span> and <span class=m>x + 2y = 10</span>, what is x + y?",a:7,h:"Subtract the second equation from the first.",s:"Subtracting gives 2x = 8, so x = 4. Then 4 + 2y = 10 gives y = 3, so x + y = <b>7</b>."},
+ {t:"Algebra",q:"Expand and simplify <span class=m>(x + 5)(x − 3) − (x + 1)²</span>. The answer is the same for every x. What is it?",a:-16,h:"Expand each part separately, then subtract carefully.",s:"(x² + 2x − 15) − (x² + 2x + 1) = <b>−16</b>."},
+ {t:"Algebra",q:"How many integers n satisfy <span class=m>−3 &lt; 2n + 1 ≤ 9</span>?",a:6,h:"Solve the inequality, then pay attention to &lt; versus ≤ at each end.",s:"−4 &lt; 2n ≤ 8, so −2 &lt; n ≤ 4. The integers are −1, 0, 1, 2, 3, 4: <b>6</b> of them."},
+ {t:"Algebra",q:"A positive number added to its own square gives 72. What is the number?",a:8,h:"n² + n = n(n + 1). Look for two consecutive numbers that multiply to 72.",s:"n(n + 1) = 72 = 8 × 9, so n = <b>8</b>."},
+ {t:"Algebra",q:"<span class=m>8⁴ ÷ 4³</span> can be written as <span class=m>2ⁿ</span>. What is n?",a:6,h:"Write 8 and 4 as powers of 2 first.",s:"8⁴ = (2³)⁴ = 2¹², and 4³ = (2²)³ = 2⁶. So 2¹² ÷ 2⁶ = 2⁶ and n = <b>6</b>."},
+ {t:"Geometry",q:"The angles of a triangle are in the ratio 2 : 3 : 7. What is the largest angle, in degrees?",a:105,h:"Angles in a triangle add up to 180°. How many parts are there?",s:"2 + 3 + 7 = 12 parts = 180°, so 1 part = 15°. Largest = 7 × 15 = <b>105°</b>."},
+ {t:"Geometry",q:"The interior angles of a polygon add up to 1440°. How many sides does it have?",a:10,h:"The angle sum of an n-sided polygon is (n − 2) × 180°.",s:"(n − 2) × 180 = 1440 → n − 2 = 8 → n = <b>10</b>."},
+ {t:"Geometry",q:"A trapezium has parallel sides of 7 cm and 13 cm, and a height of 6 cm. What is its area, in cm²?",a:60,h:"Area = average of the parallel sides × height.",s:"(7 + 13) ÷ 2 × 6 = 10 × 6 = <b>60</b> cm²."},
+ {t:"Geometry",q:"The diagonal of a square is 10 cm long. What is the area of the square, in cm²?",a:50,h:"A square is a rhombus, so area = half the product of its diagonals. Or use Pythagoras.",s:"Area = (10 × 10) ÷ 2 = <b>50</b> cm². Check: s² + s² = 100, so s² = 50."},
+ {t:"Geometry",q:"A cylinder has radius 3 cm and height 10 cm. Its volume is kπ cm³. What is k?",a:90,h:"Volume = area of circular base × height.",s:"π × 3² × 10 = 90π, so k = <b>90</b>."},
+ {t:"Geometry",q:"In an isosceles triangle the angle between the two equal sides is 40°. What is the size of each of the other two angles, in degrees?",a:70,h:"The other two angles are equal and the three add to 180°.",s:"(180 − 40) ÷ 2 = <b>70°</b>."},
+ {t:"Geometry",q:"The minute hand of a clock is 10 cm long. Its tip travels kπ cm in 15 minutes. What is k?",a:5,h:"15 minutes is a quarter of a full turn.",s:"Full circle = 2π × 10 = 20π cm. A quarter is 5π, so k = <b>5</b>."},
+ {t:"Geometry",q:"What is the distance between the points (1, 2) and (7, 10)?",a:10,h:"Draw the right-angled triangle: across 6, up 8.",s:"√(6² + 8²) = √100 = <b>10</b>."},
+ {t:"Geometry",q:"What is the gradient of the straight line through (−2, 3) and (4, 15)?",a:2,h:"Gradient = change in y ÷ change in x.",s:"(15 − 3) ÷ (4 − (−2)) = 12 ÷ 6 = <b>2</b>."},
+ {t:"Percentages",q:"A price rises by 10%, then the new price falls by 10%. The final price is what percentage of the original?",a:99,h:"Multiply 1.1 by 0.9.",s:"1.1 × 0.9 = 0.99, so the final price is <b>99%</b> of the original. The fall is taken from a bigger amount."},
+ {t:"Percentages",q:"After a 15% discount, a game costs €51. What was the original price, in euros?",a:60,h:"€51 is 85% of the original price.",s:"0.85 × P = 51, so P = 51 ÷ 0.85 = <b>€60</b>."},
+ {t:"Ratio",q:"€540 is shared in the ratio 2 : 3 : 4. How much is the largest share, in euros?",a:240,h:"How many parts are there altogether?",s:"9 parts = €540, so 1 part = €60. Largest = 4 × 60 = <b>€240</b>."},
+ {t:"Ratio",q:"5 builders take 12 days to build a wall. How many days would 6 builders take, working at the same rate?",a:10,h:"More builders means fewer days. Find the total number of builder-days.",s:"5 × 12 = 60 builder-days. 60 ÷ 6 = <b>10</b> days."},
+ {t:"Statistics",q:"A class of 20 students has a mean test score of 70. Another class of 30 students has a mean of 80. What is the mean of all 50 students?",a:76,h:"It is not 75, because the classes are different sizes. Use totals.",s:"Totals: 20 × 70 = 1400 and 30 × 80 = 2400. (1400 + 2400) ÷ 50 = <b>76</b>."},
+ {t:"Statistics",q:"Five positive whole numbers have a mode of 4 (the only mode), a median of 5 and a mean of 6. What is the largest possible value of the biggest number?",a:11,h:"Put them in order: the middle one is 5, and 4 must appear at least twice. What must the total be?",s:"Total = 30. The order is 4, 4, 5, d, e. If d were 5, then 5 would also be a mode, so d ≥ 6. Then e = 30 − 4 − 4 − 5 − 6 = <b>11</b>."},
+ {t:"Probability",q:"A bag has 3 red and 2 blue counters. Two are taken out without replacement. What is the probability that both are red? Give a fraction.",a:"3/10",h:"After the first red is taken, how many reds and how many counters are left?",s:"3/5 × 2/4 = 6/20 = <b>3/10</b>."},
+ {t:"Probability",q:"A whole number from 1 to 50 is picked at random. What is the probability that it is a multiple of 3 or a multiple of 5? Give a fraction.",a:"23/50",h:"Count multiples of 3, add multiples of 5, then subtract the ones you counted twice.",s:"Multiples of 3: 16. Multiples of 5: 10. Multiples of 15 (counted twice): 3. 16 + 10 − 3 = 23, so <b>23/50</b>."},
+ {t:"Counting",q:"How many three-digit numbers have three different digits?",a:648,h:"The first digit can't be 0. Count choices for each position in turn.",s:"First digit: 9 choices (1–9). Second: 9 (any except the first). Third: 8. 9 × 9 × 8 = <b>648</b>."},
+ {t:"Counting",q:"In how many different orders can the letters of the word MATHS be arranged?",a:120,h:"5 choices for the first letter, then 4 for the second…",s:"5 × 4 × 3 × 2 × 1 = <b>120</b>."},
+ {t:"Sequences",q:"In a sequence, each term after the second is the sum of the two terms before it. The 1st term is 3 and the 4th term is 17. What is the 2nd term?",a:7,h:"Call the 2nd term x and write the 3rd and 4th terms in terms of x.",s:"Terms: 3, x, 3 + x, 3 + 2x. So 3 + 2x = 17 and x = <b>7</b>."},
+ {t:"Sequences",q:"The sequence <span class=m>3, 6, 12, 24, …</span> doubles each time. What is the first term that is greater than 1000?",a:1536,h:"Keep doubling, or notice that 3 × 2⁹ is close.",s:"…, 192, 384, 768, 1536. The first term above 1000 is <b>1536</b>."},
+ {t:"Speed",q:"Two trains start 300 km apart and travel towards each other at 70 km/h and 80 km/h. After how many hours do they meet?",a:2,h:"Together they close the gap by 70 + 80 km every hour.",s:"Closing speed = 150 km/h. 300 ÷ 150 = <b>2</b> hours."},
+ {t:"Speed",q:"One tap fills a tank in 6 hours. A second tap fills it in 3 hours. How many hours do they take to fill it together?",a:2,h:"In one hour, what fraction of the tank does each tap fill?",s:"Per hour: 1/6 + 1/3 = 1/2 of the tank, so it takes <b>2</b> hours."}
 ];
 
 /* ---------- Round 1 UI ---------- */
-const ind={qs:[],i:0,score:0,results:[],start:0,timer:null,hint:false,answered:false};
+const GROUPS=[
+ {k:"all",l:"All topics (mixed)",t:null},
+ {k:"number",l:"Number & sequences",t:["Number","Sequences"]},
+ {k:"algebra",l:"Algebra",t:["Algebra"]},
+ {k:"geometry",l:"Geometry & coordinates",t:["Geometry"]},
+ {k:"ratio",l:"Ratio, percentages & speed",t:["Ratio","Percentages","Speed"]},
+ {k:"data",l:"Statistics, probability & counting",t:["Statistics","Probability","Counting"]}
+];
+const poolFor=k=>{const g=GROUPS.find(g=>g.k===k)||GROUPS[0];return g.t?BANK.filter(q=>g.t.includes(q.t)):BANK};
+const ind={qs:[],i:0,score:0,results:[],start:0,timer:null,hint:false,answered:false,topic:store.get("ind-topic","all")};
+if(!GROUPS.some(g=>g.k===ind.topic))ind.topic="all";
+const N=()=>ind.qs.length;
 const indStage=$("#ind-stage");
 function indIntro(){
   clearInterval(ind.timer);
@@ -388,7 +435,11 @@ function indIntro(){
       <div style="display:grid;gap:8px;max-width:60ch">
         <h2 style="font-size:1.5rem">Ready for 10 questions?</h2>
         <p class="small">Each set is shuffled from a bank of ${BANK.length} problems, so you can practise many times. A timer runs so you can see your pace; in the real round, aim for about 2 minutes per question.</p>
-        ${best?`<p class="small">Your best: <b class="num">${best.score}/20</b> in <span class="num">${fmt(best.time)}</span></p>`:""}
+        <label class="small" for="ind-topic" style="display:grid;gap:4px;max-width:340px"><b style="color:var(--ink)">Topic</b>
+          <select id="ind-topic" style="padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);font:inherit">
+            ${GROUPS.map(g=>`<option value="${g.k}" ${g.k===ind.topic?"selected":""}>${g.l} (${poolFor(g.k).length})</option>`).join("")}
+          </select></label>
+        ${best?`<p class="small">Your best mixed set: <b class="num">${best.score}/20</b> in <span class="num">${fmt(best.time)}</span></p>`:""}
       </div>
       <button class="btn" id="ind-start" type="button">Start a set</button>
     </div>`;
@@ -397,10 +448,10 @@ function indQuestion(){
   const q=ind.qs[ind.i];ind.hint=false;ind.answered=false;
   indStage.innerHTML=`
     <div class="row" style="justify-content:space-between">
-      <div class="meta"><span>Question <b class="num">${ind.i+1}</b> of 10</span><span class="chip">${q.t}</span></div>
+      <div class="meta"><span>Question <b class="num">${ind.i+1}</b> of ${N()}</span><span class="chip">${q.t}</span></div>
       <div class="meta"><span>Score <b class="num">${ind.score}</b></span><span class="timer" id="ind-time">${fmt((Date.now()-ind.start)/1000)}</span></div>
     </div>
-    <div class="progress"><i style="width:${ind.i*10}%"></i></div>
+    <div class="progress"><i style="width:${ind.i/N()*100}%"></i></div>
     <p class="qtext">${q.q}</p>
     <form class="ans" id="ind-form" autocomplete="off">
       <input id="ind-in" inputmode="text" aria-label="Your answer" placeholder="Your answer">
@@ -420,7 +471,7 @@ function indCheck(skip){
   const pts=ok?(ind.hint?1:2):0;ind.score+=pts;
   ind.results.push({q,raw,ok,pts,skip});
   $("#ind-form").querySelectorAll("input,button").forEach(e=>e.disabled=true);
-  const last=ind.i===9;
+  const last=ind.i===N()-1;
   $("#ind-fb").innerHTML=`<div class="fb ${ok?"ok":"no"}">
     <strong>${ok?`Correct! +${pts}`:skip?`Skipped. The answer is ${esc(q.a)}.`:`Not quite. The answer is ${esc(q.a)}.`}</strong>
     <p class="sol">${q.s}</p>
@@ -431,21 +482,22 @@ function indResults(){
   clearInterval(ind.timer);
   const time=Math.round((Date.now()-ind.start)/1000);
   const correct=ind.results.filter(r=>r.ok).length;
+  const max=N()*2,pct=ind.score/max,mixed=ind.topic==="all";
   const best=store.get("ind-best",null);
-  const isBest=!best||ind.score>best.score||(ind.score===best.score&&time<best.time);
+  const isBest=mixed&&(!best||ind.score>best.score||(ind.score===best.score&&time<best.time));
   if(isBest)store.set("ind-best",{score:ind.score,time});
-  const hist=store.get("ind-hist",[]);hist.push({score:ind.score,time,at:Date.now()});store.set("ind-hist",hist.slice(-20));
-  const msg=ind.score>=17?"Competition ready. Superb reasoning.":ind.score>=12?"Strong work. Review the ones you missed, then try another set.":ind.score>=7?"Good start. Read the worked solutions below, they're the best way to improve.":"These are tough on purpose. Study the solutions and try a fresh set.";
+  const hist=store.get("ind-hist",[]);hist.push({score:ind.score,max,topic:ind.topic,time,at:Date.now()});store.set("ind-hist",hist.slice(-20));
+  const msg=pct>=.85?"Competition ready. Superb reasoning.":pct>=.6?"Strong work. Review the ones you missed, then try another set.":pct>=.35?"Good start. Read the worked solutions below, they're the best way to improve.":"These are tough on purpose. Study the solutions and try a fresh set.";
   indStage.innerHTML=`
-    <div class="eyebrow">Set complete</div>
-    <div class="row" style="gap:18px;margin-top:8px"><span class="big num">${ind.score}<span style="font-size:.5em;color:var(--muted)">/20</span></span>${isBest?'<span class="chip">New personal best</span>':""}</div>
+    <div class="eyebrow">Set complete · ${esc((GROUPS.find(g=>g.k===ind.topic)||GROUPS[0]).l)}</div>
+    <div class="row" style="gap:18px;margin-top:8px"><span class="big num">${ind.score}<span style="font-size:.5em;color:var(--muted)">/${max}</span></span>${isBest?'<span class="chip">New personal best</span>':""}</div>
     <p style="margin-top:8px">${msg}</p>
     <div class="statrow">
-      <div class="stat"><b>${correct}/10</b><span>correct</span></div>
+      <div class="stat"><b>${correct}/${N()}</b><span>correct</span></div>
       <div class="stat"><b>${ind.results.filter(r=>r.ok&&r.pts===1).length}</b><span>with hint</span></div>
       <div class="stat"><b>${fmt(time)}</b><span>total time</span></div>
     </div>
-    <div class="row"><button class="btn" id="ind-start" type="button">Try a new set</button></div>
+    <div class="row"><button class="btn" id="ind-start" type="button">Try a new set</button><button class="btn ghost" id="ind-menu" type="button">Change topic</button></div>
     <h3 style="margin-top:24px;font-size:1.1rem">Review</h3>
     <div class="review">${ind.results.map((r,k)=>`
       <details><summary><span class="mk ${r.ok?"y":"n"}">${r.ok?"✓":"✗"}</span><span>Q${k+1} · ${r.q.t} · ${r.ok?r.pts+" pts":r.skip?"skipped":"you said "+esc(r.raw)}</span></summary>
@@ -454,12 +506,14 @@ function indResults(){
 }
 indStage.addEventListener("click",e=>{
   const id=e.target.id;
-  if(id==="ind-start"){ind.qs=shuffle(BANK).slice(0,10);ind.i=0;ind.score=0;ind.results=[];ind.start=Date.now();clearInterval(ind.timer);
+  if(id==="ind-start"){ind.qs=shuffle(poolFor(ind.topic)).slice(0,10);ind.i=0;ind.score=0;ind.results=[];ind.start=Date.now();clearInterval(ind.timer);
     ind.timer=setInterval(()=>{const t=$("#ind-time");if(t)t.textContent=fmt((Date.now()-ind.start)/1000)},1000);indQuestion()}
   else if(id==="ind-hint"&&!ind.hint&&!ind.answered){ind.hint=true;e.target.disabled=true;$("#ind-fb").innerHTML=`<div class="fb hint"><strong>Hint</strong><span>${ind.qs[ind.i].h}</span></div>`;$("#ind-in").focus()}
   else if(id==="ind-skip")indCheck(true);
-  else if(id==="ind-next"){if(ind.i===9)indResults();else{ind.i++;indQuestion()}}
+  else if(id==="ind-menu")indIntro();
+  else if(id==="ind-next"){if(ind.i===N()-1)indResults();else{ind.i++;indQuestion()}}
 });
+indStage.addEventListener("change",e=>{if(e.target.id==="ind-topic"){ind.topic=e.target.value;store.set("ind-topic",ind.topic)}});
 indStage.addEventListener("submit",e=>{e.preventDefault();indCheck(false)});
 
 /* ---------- Round 2 puzzles ---------- */
@@ -689,6 +743,7 @@ relStage.addEventListener("input",e=>{
 
 /* ---------- home stats, countdown, router ---------- */
 function renderBests(){
+  $("#bank-n").textContent=BANK.length;
   const bi=store.get("ind-best",null);$("#best-ind").textContent=bi?`Best: ${bi.score}/20 in ${fmt(bi.time)}`:"No attempts yet";
   $("#best-puz").textContent=`${solved().length} of ${PUZ.length} solved`;
   const bc=store.get("chain-best",null),bs=store.get("sprint-best",null);
