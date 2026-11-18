@@ -277,7 +277,7 @@ function expand(n,d){const I=Math.floor(n/d);let r=n%d;const dig=[],seen=new Map
 const partsHTML=(I,pre,rep)=>(!pre&&!rep)?String(I):`${I}.${pre}${rep?`<span class="ol">${rep}</span>`:''}`;
 const decHTML=(n,d)=>{const e=expand(n,d);return partsHTML(e.I,e.pre,e.rep)};
 const decText=(n,d)=>{const e=expand(n,d);return(!e.pre&&!e.rep)?String(e.I):`${e.I}.${e.pre}${e.rep?`(${e.rep})`:''}`};
-const dotHTML=(n,d)=>{const e=expand(n,d);if(!e.rep)return decHTML(n,d);const r=e.rep;const dotted=r.length===1?r+'̇':r[0]+'̇'+r.slice(1,-1)+r.slice(-1)+'̇';return `${e.I}.${e.pre}${dotted}`};
+const dotHTML=(n,d)=>{const e=expand(n,d);if(!e.rep)return decHTML(n,d);const r=e.rep,dt=c=>`<span class="dot">${c}</span>`;const dotted=r.length===1?dt(r):dt(r[0])+r.slice(1,-1)+dt(r.slice(-1));return `${e.I}.${e.pre}${dotted}`};
 const fr=(n,d)=>`<span class="fr"><span>${n}</span><span>${d}</span></span>`;
 const sfr=(n,d)=>{const g=gcd(n,d);return fr(n/g,d/g)};
 function parseDec(s){s=String(s).trim().replace(/\s+/g,'').replace(/,/g,'.');
