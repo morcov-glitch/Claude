@@ -1,0 +1,719 @@
+<title>ISB Mathlete Training</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: poster bands (cream → periwinkle → navy) with a sticky round switcher; each round is its own view. */
+:root{
+  --paper:#FBF6EE; --ink:#0E2A47; --muted:#4A5F7D; --line:rgba(14,42,71,.14);
+  --peri:#A9BFE3; --peri-soft:#DFE8F6; --navy:#0A3A62; --on-navy:#F3F7FD; --on-navy-muted:#B9CCE8;
+  --sky:#1C6FD1; --sky-ink:#FFFFFF; --card:#FFFFFF;
+  --good:#17804F; --good-bg:#DDF3E7; --bad:#B8362F; --bad-bg:#FBE3E1; --warn:#9A6200;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0A1828; --ink:#E6EEF9; --muted:#9DB1CE; --line:rgba(230,238,249,.14);
+  --peri:#8FA9D6; --peri-soft:#142C49; --navy:#0F2F52; --on-navy:#F3F7FD; --on-navy-muted:#AFC3E2;
+  --sky:#6AAEFF; --sky-ink:#06182B; --card:#10233A;
+  --good:#53C98F; --good-bg:#11372A; --bad:#FF8279; --bad-bg:#3F1A1A; --warn:#F2B44B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0A1828; --ink:#E6EEF9; --muted:#9DB1CE; --line:rgba(230,238,249,.14);
+  --peri:#8FA9D6; --peri-soft:#142C49; --navy:#0F2F52; --on-navy:#F3F7FD; --on-navy-muted:#AFC3E2;
+  --sky:#6AAEFF; --sky-ink:#06182B; --card:#10233A;
+  --good:#53C98F; --good-bg:#11372A; --bad:#FF8279; --bad-bg:#3F1A1A; --warn:#F2B44B; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.08;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--sky)}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px;border-radius:6px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* nav */
+header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+header.bar .wrap{display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.05rem;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:6px}
+.brand span{color:var(--peri);font-weight:700}
+nav.tabs{display:flex;gap:4px;margin-left:auto;overflow-x:auto;max-width:100%}
+nav.tabs a{padding:7px 12px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.92rem;white-space:nowrap}
+nav.tabs a:hover{color:var(--ink);background:var(--peri-soft)}
+nav.tabs a[aria-current="page"]{background:var(--navy);color:var(--on-navy)}
+
+/* hero */
+.hero .wrap{padding-block:48px 36px;display:grid;grid-template-columns:1.4fr 1fr;gap:32px;align-items:end}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.hero h1{font-size:clamp(2.6rem,7vw,4.6rem);font-weight:800;letter-spacing:-.03em;margin-top:10px}
+.hero h1 em{font-style:normal;color:var(--peri)}
+.hero .lede{margin-top:16px;max-width:52ch;color:var(--muted);font-size:1.08rem}
+.count{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px}
+.count .cd{display:flex;gap:14px;margin-top:8px}
+.count .cd div{display:flex;flex-direction:column}
+.count .cd b{font-family:var(--mono);font-size:2.4rem;line-height:1;font-variant-numeric:tabular-nums}
+.count .cd small{color:var(--muted);font-size:.78rem;margin-top:4px}
+.count .when{margin-top:14px;font-size:.92rem;color:var(--muted)}
+
+.facts{background:var(--peri)}
+:root .facts{color:#0E2A47}
+.facts .wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding-block:20px}
+.facts dt{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;opacity:.75}
+.facts dd{margin:2px 0 0;font-weight:600}
+.pill{display:inline-block;font-size:.74rem;font-weight:700;padding:2px 8px;border-radius:999px;background:#0E2A47;color:#F3F7FD;margin-top:4px}
+
+.rounds{background:var(--navy);color:var(--on-navy)}
+.rounds .wrap{padding-block:44px}
+.rounds h2{font-size:clamp(1.7rem,4vw,2.4rem)}
+.rounds .sub{color:var(--on-navy-muted);margin-top:8px;max-width:60ch}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+.rcard{display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:16px;border:1px solid rgba(243,247,253,.18);color:var(--on-navy);text-decoration:none;transition:background .15s, transform .15s}
+.rcard:hover{background:rgba(243,247,253,.07);transform:translateY(-2px)}
+.rcard .rn{font-family:var(--mono);font-size:.8rem;color:var(--on-navy-muted)}
+.rcard h3{font-size:1.3rem}
+.rcard p{color:var(--on-navy-muted);font-size:.95rem;flex:1}
+.rcard .go{font-weight:700;color:var(--on-navy)}
+.rcard .best{font-size:.82rem;color:var(--on-navy-muted)}
+
+.tips .wrap{padding-block:40px 56px;display:grid;grid-template-columns:1fr 1.3fr;gap:32px}
+.tips h2{font-size:1.6rem}
+.tips ol{margin:0;padding-left:1.2em;display:grid;gap:10px}
+.tips li::marker{font-family:var(--mono);color:var(--sky);font-weight:700}
+.tips .note{color:var(--muted);margin-top:10px;font-size:.95rem}
+
+/* practice views */
+.view{padding-block:32px 64px}
+.vhead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.vhead h1{font-size:clamp(1.9rem,5vw,2.8rem);font-weight:800;letter-spacing:-.02em}
+.vhead p{color:var(--muted);max-width:62ch;margin-top:6px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+.btn{appearance:none;border:0;cursor:pointer;border-radius:12px;padding:11px 18px;font-weight:700;background:var(--sky);color:var(--sky-ink)}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--peri-soft)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.meta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:.9rem}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:var(--peri-soft);color:var(--ink);font-size:.8rem;font-weight:600}
+.progress{height:6px;background:var(--peri-soft);border-radius:999px;overflow:hidden;margin:14px 0 20px}
+.progress i{display:block;height:100%;background:var(--sky);transition:width .3s}
+.qtext{font-size:1.25rem;line-height:1.5;max-width:60ch}
+.qtext .m{font-family:var(--mono);white-space:nowrap}
+.ans{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.ans input{flex:1 1 180px;min-width:0;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper);font-family:var(--mono);font-size:1.15rem}
+.ans input:focus{border-color:var(--sky);outline:none}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+.choices button{text-align:left;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;font-weight:600}
+.choices button:hover{border-color:var(--sky)}
+.choices button.sel{border-color:var(--sky);background:var(--peri-soft)}
+.fb{margin-top:18px;padding:16px;border-radius:14px;display:grid;gap:8px}
+.fb.ok{background:var(--good-bg)} .fb.ok strong{color:var(--good)}
+.fb.no{background:var(--bad-bg)} .fb.no strong{color:var(--bad)}
+.fb.hint{background:var(--peri-soft)}
+.fb .sol{font-size:.98rem}
+.small{font-size:.86rem;color:var(--muted)}
+.big{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,9vw,4rem);line-height:1}
+.statrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.stat{border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat b{display:block;font-family:var(--mono);font-size:1.6rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.8rem;color:var(--muted)}
+.review{display:grid;gap:8px;margin-top:16px}
+.review details{border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.review summary{cursor:pointer;display:flex;gap:10px;align-items:baseline}
+.review summary .mk{font-family:var(--mono);font-weight:700;width:1.4em;flex:none}
+.review .mk.y{color:var(--good)} .review .mk.n{color:var(--bad)}
+.review details > div{margin-top:8px;font-size:.95rem;color:var(--muted)}
+
+/* puzzles */
+.pfilter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pcard{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:14px;border:1px solid var(--line);background:var(--card)}
+.pcard:hover{border-color:var(--sky)}
+.pcard:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.pcard .pn{font-family:var(--mono);font-size:.78rem;color:var(--muted);display:flex;justify-content:space-between}
+.pcard h3{font-size:1.08rem;font-family:var(--body);font-weight:700}
+.pcard .st{font-size:.8rem;font-weight:700}
+.pcard .st.done{color:var(--good)}
+.pcard .st.todo{color:var(--muted)}
+.diff{letter-spacing:2px;color:var(--warn)}
+
+/* relay */
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.legs{display:flex;gap:6px;margin:6px 0 18px}
+.legs span{flex:1;height:8px;border-radius:999px;background:var(--peri-soft)}
+.legs span.done{background:var(--good)}
+.legs span.now{background:var(--sky)}
+.baton{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:12px;background:var(--navy);color:var(--on-navy);font-weight:700}
+.baton b{font-family:var(--mono);font-size:1.3rem}
+.sprintq{font-family:var(--mono);font-size:clamp(2.2rem,8vw,3.4rem);font-weight:700;text-align:center;padding:24px 0 8px;font-variant-numeric:tabular-nums}
+.timer{font-family:var(--mono);font-weight:700;font-variant-numeric:tabular-nums}
+.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+
+footer{border-top:1px solid var(--line)}
+footer .wrap{padding-block:20px;color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width: 820px){
+  .hero .wrap,.tips .wrap{grid-template-columns:1fr}
+  .facts .wrap{grid-template-columns:repeat(2,1fr)}
+  .rgrid,.pgrid{grid-template-columns:1fr}
+  .modes{grid-template-columns:1fr}
+}
+@media (max-width: 480px){
+  .choices{grid-template-columns:1fr}
+  .statrow{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .stat b{font-size:1.25rem}
+  .panel{padding:18px}
+  nav.tabs{margin-left:0}
+}
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#home">Mathlete <span>Training</span></a>
+    <nav class="tabs" aria-label="Rounds">
+      <a href="#home" data-nav="home">Overview</a>
+      <a href="#individual" data-nav="individual">1 · Individual</a>
+      <a href="#puzzles" data-nav="puzzles">2 · Logic &amp; Puzzles</a>
+      <a href="#relay" data-nav="relay">3 · Relay Race</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- HOME -->
+<section id="v-home">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">International School of Brno · Term 1 · Year 8</div>
+        <h1>Train for the <em>Mathlete</em> Competition</h1>
+        <p class="lede">Practise all three rounds before the big morning: extended problems for the Individual Challenge, brain-teasers for the Team Logic &amp; Puzzle Round, and fast chained arithmetic for the Relay Race.</p>
+      </div>
+      <div class="count" aria-live="polite">
+        <div class="eyebrow">Time until arrival</div>
+        <div class="cd" id="cd">
+          <div><b id="cd-d">0</b><small>days</small></div>
+          <div><b id="cd-h">0</b><small>hours</small></div>
+          <div><b id="cd-m">0</b><small>minutes</small></div>
+        </div>
+        <p class="when">Tuesday 24 November 2026, 8:30 AM, auditorium</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="facts">
+    <dl class="wrap">
+      <div><dt>When</dt><dd>Tue 24 Nov 2026</dd></div>
+      <div><dt>Arrival</dt><dd>8:30 AM, auditorium</dd></div>
+      <div><dt>Wrap-up</dt><dd>10:00 AM</dd></div>
+      <div><dt>Dress</dt><dd>Smart / nice attire</dd></div>
+      <div><dt>Register by</dt><dd>Thu 19 Nov via Toddle<br><span class="pill" id="reg-pill">…</span></dd></div>
+    </dl>
+  </div>
+
+  <div class="rounds">
+    <div class="wrap">
+      <h2>Three rounds. Practise each one.</h2>
+      <p class="sub">The real competition sorts you into mixed-grade teams on the day. Here you can train solo, or crowd round one screen with friends.</p>
+      <div class="rgrid">
+        <a class="rcard" href="#individual">
+          <span class="rn">ROUND 1</span>
+          <h3>Individual Challenge</h3>
+          <p>10 extended Year 8 problems drawn from a bank of 32: number, algebra, geometry, ratio and probability. Accuracy and reasoning count.</p>
+          <span class="best" id="best-ind">No attempts yet</span>
+          <span class="go">Start practice →</span>
+        </a>
+        <a class="rcard" href="#puzzles">
+          <span class="rn">ROUND 2</span>
+          <h3>Team Logic &amp; Puzzles</h3>
+          <p>18 brain-teasers: knights and knaves, counting tricks, worst-case thinking and pattern hunts. Hints when you're stuck.</p>
+          <span class="best" id="best-puz">0 of 18 solved</span>
+          <span class="go">Open puzzles →</span>
+        </a>
+        <a class="rcard" href="#relay">
+          <span class="rn">ROUND 3</span>
+          <h3>Relay Arithmetic Race</h3>
+          <p>Five-leg relays where each answer becomes the next runner's starting number, plus a 60-second mental arithmetic sprint.</p>
+          <span class="best" id="best-rel">No races yet</span>
+          <span class="go">Start racing →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="tips">
+    <div class="wrap">
+      <div>
+        <h2>On the day</h2>
+        <p class="note">Bring enthusiasm, focus and team spirit. Arrive on time so the morning can start promptly.</p>
+      </div>
+      <ol>
+        <li><strong>Read the whole question twice.</strong> Mathlete questions hide the key fact in one word: "at least", "guarantee", "consecutive".</li>
+        <li><strong>Write down working.</strong> Reasoning counts in the Individual round, and neat working helps you catch slips.</li>
+        <li><strong>In the team round, split then share.</strong> Two people try the puzzle; one checks the answer makes sense.</li>
+        <li><strong>In the relay, check before you pass.</strong> A wrong number ruins every leg after yours. A two-second check is cheaper.</li>
+        <li><strong>Estimate first.</strong> If 18 × 23 should be "about 400", an answer of 4140 is clearly wrong.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- INDIVIDUAL -->
+<section id="v-individual" class="view" hidden>
+  <div class="wrap">
+    <div class="vhead">
+      <div>
+        <div class="eyebrow">Round 1</div>
+        <h1>Individual Challenge</h1>
+        <p>Ten questions at extended Year 8 level. Type a number (fractions like <span class="num">5/36</span> are fine). 2 points for a correct answer, 1 point if you used the hint.</p>
+      </div>
+    </div>
+    <div class="panel" id="ind-stage"></div>
+  </div>
+</section>
+
+<!-- PUZZLES -->
+<section id="v-puzzles" class="view" hidden>
+  <div class="wrap">
+    <div class="vhead">
+      <div>
+        <div class="eyebrow">Round 2</div>
+        <h1>Team Logic &amp; Puzzles</h1>
+        <p>Pick any puzzle. Solve it alone or with friends. Your solved puzzles are remembered on this device.</p>
+      </div>
+      <div class="meta"><span class="chip" id="puz-count">0 / 18 solved</span><button class="btn ghost" id="puz-reset" type="button">Reset progress</button></div>
+    </div>
+    <div id="puz-stage"></div>
+  </div>
+</section>
+
+<!-- RELAY -->
+<section id="v-relay" class="view" hidden>
+  <div class="wrap">
+    <div class="vhead">
+      <div>
+        <div class="eyebrow">Round 3</div>
+        <h1>Relay Arithmetic Race</h1>
+        <p>Speed plus accuracy. No calculators. Use the keyboard and press Enter to submit.</p>
+      </div>
+    </div>
+    <div id="rel-stage"></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Unofficial practice app for ISB Year 8 Mathletes · Term 1, 2026</span>
+    <span>Questions about the competition? Ask Ms Lavin.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const store={get(k,d){try{const v=localStorage.getItem("mathlete:"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("mathlete:"+k,JSON.stringify(v))}catch(e){}}};
+const fmt=s=>{s=Math.max(0,Math.round(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+
+function toNum(raw){
+  if(raw==null)return NaN;
+  let s=String(raw).trim().toLowerCase().replace(/[−–]/g,"-").replace(/,/g,"").replace(/\s+/g,"");
+  s=s.replace(/^(x|n|k|t)=/,"").replace(/(cm²|cm2|cm|km\/h|kmh|km|m\/s|kg|°|degrees?|%|£|€|\$|days?|pages?|seconds?|s|π|pi)$/,"").replace(/^(£|€|\$)/,"");
+  let m=s.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+  if(m){const b=+m[2];return b===0?NaN:+m[1]/b}
+  if(/^-?(\d+\.?\d*|\.\d+)$/.test(s))return +s;
+  return NaN;
+}
+function matches(input,answer){
+  const v=toNum(input),a=typeof answer==="number"?answer:toNum(answer);
+  if(isNaN(v))return null;
+  return Number.isInteger(a)?Math.abs(v-a)<1e-9:Math.abs(v-a)<0.001;
+}
+
+/* ---------- Round 1 bank ---------- */
+const BANK=[
+ {t:"Number",q:"What is the smallest positive integer that leaves a remainder of 1 when divided by 2, 3, 4, 5 and 6?",a:61,h:"Find the lowest common multiple of 2, 3, 4, 5 and 6 first.",s:"LCM(2,3,4,5,6) = 60, so 60 is divisible by all of them. Add 1 to get the remainder: <b>61</b>."},
+ {t:"Statistics",q:"The mean of five numbers is 12. When one number is removed, the mean of the remaining four is 10. What number was removed?",a:20,h:"Work with totals, not means.",s:"Total of five = 5 × 12 = 60. Total of four = 4 × 10 = 40. Removed number = 60 − 40 = <b>20</b>."},
+ {t:"Percentages",q:"A jacket is reduced by 20% in a sale. Later the sale price is increased by 25%. The final price is what percentage of the original price?",a:100,h:"Use multipliers: a 20% decrease is × 0.8.",s:"0.8 × 1.25 = 1.00, so the final price is <b>100%</b> of the original."},
+ {t:"Algebra",q:"Solve <span class=m>3(x − 4) = x + 10</span>. What is x?",a:11,h:"Expand the bracket, then collect x terms on one side.",s:"3x − 12 = x + 10 → 2x = 22 → x = <b>11</b>."},
+ {t:"Geometry",q:"Each interior angle of a regular polygon is 156°. How many sides does it have?",a:15,h:"Interior + exterior = 180°, and exterior angles add up to 360°.",s:"Exterior angle = 180° − 156° = 24°. Sides = 360 ÷ 24 = <b>15</b>."},
+ {t:"Number",q:"How many zeros are at the end of <span class=m>25!</span> (that is 25 × 24 × 23 × … × 2 × 1)?",a:6,h:"Each trailing zero needs a factor 10 = 2 × 5. Count the 5s.",s:"Multiples of 5 up to 25: 5, 10, 15, 20, 25 give five 5s, and 25 = 5 × 5 gives one more. Plenty of 2s, so <b>6</b> zeros."},
+ {t:"Sequences",q:"What is the sum of the first 20 odd numbers (1 + 3 + 5 + … )?",a:400,h:"Try the first 1, 2, 3, 4 odd numbers. What pattern do the sums make?",s:"1, 4, 9, 16, … the sum of the first n odd numbers is n². So 20² = <b>400</b>."},
+ {t:"Ratio",q:"In a club the ratio of boys to girls is 3 : 5. There are 12 more girls than boys. How many members are there in total?",a:48,h:"The difference between the ratio parts is 5 − 3 = 2 parts.",s:"2 parts = 12, so 1 part = 6. Total = 8 parts = <b>48</b>."},
+ {t:"Geometry",q:"A right-angled triangle has shorter sides 9 cm and 12 cm. How long is the hypotenuse, in cm?",a:15,h:"Pythagoras, or spot a scaled 3-4-5 triangle.",s:"9² + 12² = 81 + 144 = 225, √225 = <b>15</b> cm. (It's 3-4-5 scaled by 3.)"},
+ {t:"Probability",q:"Two fair six-sided dice are rolled. What is the probability that the total is 8? Give a fraction.",a:"5/36",h:"There are 36 equally likely outcomes. List the pairs that make 8.",s:"(2,6), (3,5), (4,4), (5,3), (6,2): five outcomes, so <b>5/36</b>."},
+ {t:"Sequences",q:"What is the next term? <span class=m>2, 6, 12, 20, 30, …</span>",a:42,h:"Look at the differences between terms.",s:"Differences are 4, 6, 8, 10, so the next difference is 12: 30 + 12 = <b>42</b>. (The terms are n(n+1).)"},
+ {t:"Sequences",q:"The sequence <span class=m>7, 11, 15, 19, …</span> continues in the same way. What is the 50th term?",a:203,h:"Find the nth term rule: it goes up by 4 each time.",s:"nth term = 4n + 3. 50th term = 200 + 3 = <b>203</b>."},
+ {t:"Geometry",q:"The area of a circle is 49π cm². Its circumference is kπ cm. What is k?",a:14,h:"From πr² = 49π, find r.",s:"r² = 49 so r = 7. Circumference = 2πr = 14π, so k = <b>14</b>."},
+ {t:"Algebra",q:"If <span class=m>2<sup>x</sup> = 32</span>, what is the value of x²?",a:25,h:"Count how many 2s multiply to 32.",s:"2⁵ = 32, so x = 5 and x² = <b>25</b>."},
+ {t:"Speed",q:"A car travels 150 km in 2 hours 30 minutes. What is its average speed in km/h?",a:60,h:"2 h 30 min is 2.5 hours, not 2.3.",s:"150 ÷ 2.5 = <b>60</b> km/h."},
+ {t:"Number",q:"How many positive whole numbers divide exactly into 72?",a:12,h:"Write 72 as a product of primes, or list factor pairs.",s:"72 = 2³ × 3². Number of factors = (3+1)(2+1) = <b>12</b>: 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36, 72."},
+ {t:"Algebra",q:"If a = 3 and b = −2, what is the value of <span class=m>a² − 2ab + b²</span>?",a:25,h:"Recognise the expression as a perfect square.",s:"a² − 2ab + b² = (a − b)² = (3 − (−2))² = 5² = <b>25</b>."},
+ {t:"Geometry",q:"A rectangle has perimeter 34 cm and area 60 cm². How long is its diagonal, in cm?",a:13,h:"Length + width = 17 and length × width = 60.",s:"Two numbers adding to 17 with product 60: 12 and 5. Diagonal = √(144 + 25) = <b>13</b> cm."},
+ {t:"Counting",q:"How many diagonals does an octagon have?",a:20,h:"Each vertex joins to every other vertex except itself and its two neighbours.",s:"Each of 8 vertices has 5 diagonals; each diagonal is counted twice: 8 × 5 ÷ 2 = <b>20</b>."},
+ {t:"Percentages",q:"€1000 is invested at 10% compound interest per year. How much is in the account after 2 years, in euros?",a:1210,h:"Compound means interest is added on the new total each year.",s:"1000 × 1.1 = 1100, then 1100 × 1.1 = <b>1210</b>."},
+ {t:"Number",q:"What is the highest common factor of 84 and 126?",a:42,h:"Write both as products of primes.",s:"84 = 2² × 3 × 7, 126 = 2 × 3² × 7. HCF = 2 × 3 × 7 = <b>42</b>."},
+ {t:"Geometry",q:"What is the smaller angle between the hour and minute hands of a clock at 3:30, in degrees?",a:75,h:"The hour hand moves too: 30° per hour, so 15° per half-hour.",s:"Minute hand at 180°. Hour hand at 90° + 15° = 105°. Difference = <b>75°</b>."},
+ {t:"Algebra",q:"Three consecutive integers add up to 147. What is the largest of them?",a:50,h:"The middle one is the mean.",s:"Middle = 147 ÷ 3 = 49, so the integers are 48, 49, 50. Largest = <b>50</b>."},
+ {t:"Ratio",q:"A map has scale 1 : 25 000. Two villages are 8 cm apart on the map. How far apart are they in real life, in km?",a:2,h:"8 cm on the map is 8 × 25 000 cm in real life. Then convert.",s:"8 × 25 000 = 200 000 cm = 2000 m = <b>2</b> km."},
+ {t:"Number",q:"What is the units digit of <span class=m>7<sup>2026</sup></span>?",a:9,h:"Units digits of powers of 7 repeat in a cycle. Find its length.",s:"7, 49, 343, 2401 → units digits 7, 9, 3, 1, repeating every 4. 2026 = 4 × 506 + 2, so it matches 7² → <b>9</b>."},
+ {t:"Speed",q:"Sam cycles to the park at 60 km/h (downhill!) and back along the same road at 40 km/h. What is the average speed for the whole trip, in km/h?",a:48,h:"It is NOT 50. Pick a distance, say 120 km each way, and find the total time.",s:"120 km takes 2 h there and 3 h back. Total 240 km in 5 h = <b>48</b> km/h."},
+ {t:"Probability",q:"A fair coin is tossed 3 times. What is the probability of getting at least one head? Give a fraction.",a:"7/8",h:"Find the probability of NO heads first.",s:"P(no heads) = (1/2)³ = 1/8. P(at least one) = 1 − 1/8 = <b>7/8</b>."},
+ {t:"Geometry",q:"A cube has volume 216 cm³. What is its total surface area, in cm²?",a:216,h:"Find the side length first.",s:"Side = ∛216 = 6 cm. Surface area = 6 faces × 36 = <b>216</b> cm². (Same number, different units!)"},
+ {t:"Algebra",q:"If <span class=m>x + 1/x = 5</span>, what is the value of <span class=m>x² + 1/x²</span>?",a:23,h:"Square both sides of the first equation.",s:"(x + 1/x)² = x² + 2 + 1/x² = 25, so x² + 1/x² = <b>23</b>."},
+ {t:"Counting",q:"At a party, each of 10 people shakes hands once with every other person. How many handshakes are there?",a:45,h:"Each person shakes 9 hands, but each handshake involves two people.",s:"10 × 9 ÷ 2 = <b>45</b>."},
+ {t:"Percentages",q:"20% of a number equals 30% of 40. What is the number?",a:60,h:"Find 30% of 40 first.",s:"30% of 40 = 12. If 20% of n = 12 then n = 12 × 5 = <b>60</b>."},
+ {t:"Algebra",q:"Two numbers have sum 17 and difference 5. What is their product?",a:66,h:"Add the two equations to find the larger number.",s:"x + y = 17 and x − y = 5 give 2x = 22, x = 11, y = 6. Product = <b>66</b>."}
+];
+
+/* ---------- Round 1 UI ---------- */
+const ind={qs:[],i:0,score:0,results:[],start:0,timer:null,hint:false,answered:false};
+const indStage=$("#ind-stage");
+function indIntro(){
+  clearInterval(ind.timer);
+  const best=store.get("ind-best",null);
+  indStage.innerHTML=`
+    <div class="row" style="justify-content:space-between">
+      <div style="display:grid;gap:8px;max-width:60ch">
+        <h2 style="font-size:1.5rem">Ready for 10 questions?</h2>
+        <p class="small">Each set is shuffled from a bank of ${BANK.length} problems, so you can practise many times. A timer runs so you can see your pace; in the real round, aim for about 2 minutes per question.</p>
+        ${best?`<p class="small">Your best: <b class="num">${best.score}/20</b> in <span class="num">${fmt(best.time)}</span></p>`:""}
+      </div>
+      <button class="btn" id="ind-start" type="button">Start a set</button>
+    </div>`;
+}
+function indQuestion(){
+  const q=ind.qs[ind.i];ind.hint=false;ind.answered=false;
+  indStage.innerHTML=`
+    <div class="row" style="justify-content:space-between">
+      <div class="meta"><span>Question <b class="num">${ind.i+1}</b> of 10</span><span class="chip">${q.t}</span></div>
+      <div class="meta"><span>Score <b class="num">${ind.score}</b></span><span class="timer" id="ind-time">${fmt((Date.now()-ind.start)/1000)}</span></div>
+    </div>
+    <div class="progress"><i style="width:${ind.i*10}%"></i></div>
+    <p class="qtext">${q.q}</p>
+    <form class="ans" id="ind-form" autocomplete="off">
+      <input id="ind-in" inputmode="text" aria-label="Your answer" placeholder="Your answer">
+      <button class="btn" type="submit">Check</button>
+      <button class="btn ghost" type="button" id="ind-hint">Hint (−1 pt)</button>
+      <button class="btn ghost" type="button" id="ind-skip">Skip</button>
+    </form>
+    <div id="ind-fb" aria-live="polite"></div>`;
+  $("#ind-in").focus();
+}
+function indCheck(skip){
+  if(ind.answered)return;
+  const q=ind.qs[ind.i];const raw=skip?"":$("#ind-in").value;
+  let ok=false;
+  if(!skip){const m=matches(raw,q.a);if(m===null){$("#ind-fb").innerHTML=`<div class="fb hint"><span>Type a number, like <span class=num>42</span> or <span class=num>3/8</span>.</span></div>`;return}ok=m}
+  ind.answered=true;
+  const pts=ok?(ind.hint?1:2):0;ind.score+=pts;
+  ind.results.push({q,raw,ok,pts,skip});
+  $("#ind-form").querySelectorAll("input,button").forEach(e=>e.disabled=true);
+  const last=ind.i===9;
+  $("#ind-fb").innerHTML=`<div class="fb ${ok?"ok":"no"}">
+    <strong>${ok?`Correct! +${pts}`:skip?`Skipped. The answer is ${esc(q.a)}.`:`Not quite. The answer is ${esc(q.a)}.`}</strong>
+    <p class="sol">${q.s}</p>
+    <div class="row"><button class="btn" type="button" id="ind-next">${last?"See results":"Next question"}</button></div></div>`;
+  $("#ind-next").focus();
+}
+function indResults(){
+  clearInterval(ind.timer);
+  const time=Math.round((Date.now()-ind.start)/1000);
+  const correct=ind.results.filter(r=>r.ok).length;
+  const best=store.get("ind-best",null);
+  const isBest=!best||ind.score>best.score||(ind.score===best.score&&time<best.time);
+  if(isBest)store.set("ind-best",{score:ind.score,time});
+  const hist=store.get("ind-hist",[]);hist.push({score:ind.score,time,at:Date.now()});store.set("ind-hist",hist.slice(-20));
+  const msg=ind.score>=17?"Competition ready. Superb reasoning.":ind.score>=12?"Strong work. Review the ones you missed, then try another set.":ind.score>=7?"Good start. Read the worked solutions below, they're the best way to improve.":"These are tough on purpose. Study the solutions and try a fresh set.";
+  indStage.innerHTML=`
+    <div class="eyebrow">Set complete</div>
+    <div class="row" style="gap:18px;margin-top:8px"><span class="big num">${ind.score}<span style="font-size:.5em;color:var(--muted)">/20</span></span>${isBest?'<span class="chip">New personal best</span>':""}</div>
+    <p style="margin-top:8px">${msg}</p>
+    <div class="statrow">
+      <div class="stat"><b>${correct}/10</b><span>correct</span></div>
+      <div class="stat"><b>${ind.results.filter(r=>r.ok&&r.pts===1).length}</b><span>with hint</span></div>
+      <div class="stat"><b>${fmt(time)}</b><span>total time</span></div>
+    </div>
+    <div class="row"><button class="btn" id="ind-start" type="button">Try a new set</button></div>
+    <h3 style="margin-top:24px;font-size:1.1rem">Review</h3>
+    <div class="review">${ind.results.map((r,k)=>`
+      <details><summary><span class="mk ${r.ok?"y":"n"}">${r.ok?"✓":"✗"}</span><span>Q${k+1} · ${r.q.t} · ${r.ok?r.pts+" pts":r.skip?"skipped":"you said "+esc(r.raw)}</span></summary>
+      <div><p>${r.q.q}</p><p style="margin-top:6px">${r.q.s}</p></div></details>`).join("")}</div>`;
+  renderBests();
+}
+indStage.addEventListener("click",e=>{
+  const id=e.target.id;
+  if(id==="ind-start"){ind.qs=shuffle(BANK).slice(0,10);ind.i=0;ind.score=0;ind.results=[];ind.start=Date.now();clearInterval(ind.timer);
+    ind.timer=setInterval(()=>{const t=$("#ind-time");if(t)t.textContent=fmt((Date.now()-ind.start)/1000)},1000);indQuestion()}
+  else if(id==="ind-hint"&&!ind.hint&&!ind.answered){ind.hint=true;e.target.disabled=true;$("#ind-fb").innerHTML=`<div class="fb hint"><strong>Hint</strong><span>${ind.qs[ind.i].h}</span></div>`;$("#ind-in").focus()}
+  else if(id==="ind-skip")indCheck(true);
+  else if(id==="ind-next"){if(ind.i===9)indResults();else{ind.i++;indQuestion()}}
+});
+indStage.addEventListener("submit",e=>{e.preventDefault();indCheck(false)});
+
+/* ---------- Round 2 puzzles ---------- */
+const PUZ=[
+ {n:"Knights and knaves",d:2,q:"On an island, knights always tell the truth and knaves always lie. A says: \"We are both knaves.\" How many of A and B are knights?",a:1,h:"Could a knight ever say \"I am a knave\"?",s:"If A were a knight, A's statement would be a lie. So A is a knave and the statement is false, which means they are not both knaves. So B is a knight: <b>1</b> knight."},
+ {n:"Sock drawer",d:1,q:"A dark drawer holds 10 red socks and 10 blue socks. What is the smallest number of socks you must take out to be certain of a matching pair?",a:3,h:"Think about the unluckiest possible draws.",s:"Worst case: one red, one blue. The third sock must match one of them: <b>3</b>."},
+ {n:"Two reds, guaranteed",d:2,q:"Same drawer: 10 red and 10 blue socks. What is the smallest number you must take out to be certain of getting two RED socks?",a:12,h:"The unlucky case is pulling every blue sock first.",s:"You might draw all 10 blue and then 1 red. Only after 10 + 2 = <b>12</b> are two reds guaranteed."},
+ {n:"Heads and legs",d:1,q:"A farm has only chickens and cows. There are 30 heads and 74 legs. How many cows are there?",a:7,h:"If every animal were a chicken, how many legs would there be?",s:"30 chickens would have 60 legs. Each cow adds 2 extra legs, and there are 14 extra: 14 ÷ 2 = <b>7</b> cows."},
+ {n:"Magic square",d:1,q:"The numbers 1 to 9 are placed in a 3 × 3 grid so that every row, column and diagonal has the same total. Which number must go in the centre?",a:5,h:"First find the common total: 1 + 2 + … + 9 shared between 3 rows.",s:"Total is 45, so each line sums to 15. The centre is in 4 lines (row, column, two diagonals); adding those gives 60 = 45 + 3 × centre, so the centre is <b>5</b>."},
+ {n:"The snail",d:2,q:"A snail at the bottom of a 10 m well climbs 3 m each day and slips back 2 m each night. On which day does it reach the top?",a:8,h:"Careful: once it reaches the top during the day, it doesn't slip back.",s:"At the start of day n it is at n − 1 metres, and climbs to n + 2 metres. It escapes when n + 2 ≥ 10, so on day <b>8</b>."},
+ {n:"Cutting the cake",d:3,q:"What is the greatest number of pieces you can cut a flat round pancake into with 4 straight cuts (no stacking or moving pieces)?",a:11,h:"Each new cut adds one more piece than the number of earlier cuts it crosses.",s:"Pieces: 1 cut → 2, 2 → 4, 3 → 7, 4 → 11. The kth cut can cross k − 1 lines, adding k pieces: 1 + 1 + 2 + 3 + 4 = <b>11</b>."},
+ {n:"Hidden squares",d:2,q:"How many squares of any size can you find in a 4 × 4 grid of small squares?",a:30,h:"Count 1×1, then 2×2, then 3×3, then 4×4 squares.",s:"16 + 9 + 4 + 1 = <b>30</b>."},
+ {n:"Bat and ball",d:1,q:"A bat and a ball cost €1.10 together. The bat costs €1.00 more than the ball. How much does the ball cost, in cents?",a:5,h:"10 cents is the tempting answer. Check it!",s:"Ball = b, bat = b + 100. 2b + 100 = 110, so b = <b>5</b> cents."},
+ {n:"Counting ones",d:2,q:"You write every whole number from 1 to 100. How many times do you write the digit 1?",a:21,h:"Count 1s in the units place and in the tens place separately. Don't forget 100.",s:"Units place: 1, 11, 21, …, 91 → 10. Tens place: 10–19 → 10. Plus 100 → 1. Total <b>21</b>."},
+ {n:"Page numbers",d:2,q:"A book uses exactly 192 digits to number its pages, starting from page 1. How many pages does it have?",a:100,h:"Pages 1–9 use 1 digit each, 10–99 use 2 digits each.",s:"1–9: 9 digits. 10–99: 90 × 2 = 180 digits. Running total 189; 3 more digits is one 3-digit page. So <b>100</b> pages."},
+ {n:"The race",d:1,q:"Five friends ran a race. Cal beat Ana. Ana beat Ben. Dev finished right behind Ben. Eve beat Cal. Nobody tied. Who came 3rd?",choices:["Ana","Ben","Cal","Eve"],a:0,h:"Build the order from the chains of \"beat\".",s:"Eve → Cal → Ana → Ben → Dev. <b>Ana</b> came 3rd."},
+ {n:"Heavy coin",d:3,q:"You have 9 identical-looking coins. One is heavier than the others. Using a balance scale, what is the smallest number of weighings that always finds the heavy coin?",a:2,h:"Each weighing has three outcomes: left heavy, right heavy, or balance.",s:"Weigh 3 vs 3. Whichever side is heavy, or the 3 left off if balanced, holds the coin. Then weigh 1 vs 1 of those 3. <b>2</b> weighings."},
+ {n:"100 lockers",d:3,q:"100 closed lockers are numbered 1 to 100. Student 1 opens every locker. Student 2 toggles every 2nd locker, student 3 every 3rd, and so on up to student 100. How many lockers are open at the end?",a:10,h:"A locker is toggled once for each of its factors. Which numbers have an odd number of factors?",s:"Only square numbers have an odd number of factors (one factor pairs with itself). Squares up to 100: 1, 4, …, 100 → <b>10</b>."},
+ {n:"Train in a tunnel",d:2,q:"A 200 m train travels at 20 m/s through a 400 m tunnel. How many seconds pass from the front entering to the back leaving?",a:30,h:"The front of the train must travel the tunnel length plus the train length.",s:"Distance = 400 + 200 = 600 m. Time = 600 ÷ 20 = <b>30</b> s."},
+ {n:"Look and say",d:3,q:"What comes next? <span class=m>1, 11, 21, 1211, 111221, …</span>",a:312211,h:"Read each term out loud, describing the digits of the previous one.",s:"Each term describes the last: 111221 is \"three 1s, two 2s, one 1\" → <b>312211</b>."},
+ {n:"Reverse the digits",d:2,q:"A two-digit number has digits that add to 11. Reversing its digits makes it 27 larger. What is the number?",a:47,h:"Reversing 10a + b gives 10b + a. The difference is 9(b − a).",s:"9(b − a) = 27 → b − a = 3, and a + b = 11 → a = 4, b = 7. The number is <b>47</b>."},
+ {n:"Grid paths",d:3,q:"On a 3 × 3 grid of squares, you walk along grid lines from the bottom-left corner to the top-right corner, only moving right or up. How many different routes are there?",a:20,h:"Every route is 3 rights and 3 ups in some order. Or count routes to each crossing point.",s:"Choose which 3 of the 6 moves are \"right\": 6 × 5 × 4 ÷ (3 × 2 × 1) = <b>20</b>. (Pascal's triangle gives the same.)"}
+];
+const puzStage=$("#puz-stage");
+let puzOpen=null,puzSel=null,puzFilter="all";
+function solved(){return store.get("puz-solved",[])}
+function puzList(){
+  const done=solved();
+  const items=PUZ.map((p,i)=>({p,i,ok:done.includes(i)})).filter(x=>puzFilter==="all"||(puzFilter==="todo"?!x.ok:x.ok));
+  puzStage.innerHTML=`
+    <div class="pfilter" role="group" aria-label="Filter puzzles">
+      ${[["all","All"],["todo","Unsolved"],["done","Solved"]].map(([k,l])=>`<button type="button" class="btn ${puzFilter===k?"":"ghost"}" data-filter="${k}">${l}</button>`).join("")}
+    </div>
+    <div class="pgrid">${items.map(({p,i,ok})=>`
+      <button type="button" class="pcard" data-p="${i}">
+        <span class="pn"><span>#${String(i+1).padStart(2,"0")}</span><span class="diff" aria-label="Difficulty ${p.d} of 3">${"●".repeat(p.d)}${"○".repeat(3-p.d)}</span></span>
+        <h3>${p.n}</h3>
+        <span class="st ${ok?"done":"todo"}">${ok?"✓ Solved":"Not solved yet"}</span>
+      </button>`).join("")||'<p class="small">Nothing here yet.</p>'}</div>`;
+  $("#puz-count").textContent=`${done.length} / ${PUZ.length} solved`;
+}
+function puzShow(i){
+  puzOpen=i;puzSel=null;const p=PUZ[i];const ok=solved().includes(i);
+  puzStage.innerHTML=`
+    <div class="panel">
+      <div class="row" style="justify-content:space-between">
+        <button class="btn ghost" type="button" id="puz-back">← All puzzles</button>
+        <div class="meta"><span class="chip">#${String(i+1).padStart(2,"0")} · ${p.n}</span><span class="diff">${"●".repeat(p.d)}${"○".repeat(3-p.d)}</span>${ok?'<span class="chip" style="color:var(--good)">✓ Solved before</span>':""}</div>
+      </div>
+      <p class="qtext" style="margin-top:20px">${p.q}</p>
+      ${p.choices?`<div class="choices" id="puz-choices">${p.choices.map((c,k)=>`<button type="button" data-c="${k}">${esc(c)}</button>`).join("")}</div>
+        <div class="ans"><button class="btn" type="button" id="puz-check">Check</button><button class="btn ghost" type="button" id="puz-hint">Hint</button><button class="btn ghost" type="button" id="puz-reveal">Show solution</button></div>`
+      :`<form class="ans" id="puz-form" autocomplete="off"><input id="puz-in" aria-label="Your answer" placeholder="Your answer"><button class="btn" type="submit">Check</button><button class="btn ghost" type="button" id="puz-hint">Hint</button><button class="btn ghost" type="button" id="puz-reveal">Show solution</button></form>`}
+      <div id="puz-fb" aria-live="polite"></div>
+      <div class="row" style="justify-content:space-between;margin-top:20px">
+        <button class="btn ghost" type="button" id="puz-prev" ${i===0?"disabled":""}>← Previous</button>
+        <button class="btn ghost" type="button" id="puz-next" ${i===PUZ.length-1?"disabled":""}>Next →</button>
+      </div>
+    </div>`;
+  const inp=$("#puz-in");if(inp)inp.focus();
+}
+function puzCheck(){
+  const p=PUZ[puzOpen];let ok;
+  if(p.choices){if(puzSel==null){$("#puz-fb").innerHTML=`<div class="fb hint"><span>Pick an answer first.</span></div>`;return}ok=puzSel===p.a}
+  else{ok=matches($("#puz-in").value,p.a);if(ok===null){$("#puz-fb").innerHTML=`<div class="fb hint"><span>Type a number as your answer.</span></div>`;return}}
+  if(ok){const d=solved();if(!d.includes(puzOpen)){d.push(puzOpen);store.set("puz-solved",d)}
+    $("#puz-fb").innerHTML=`<div class="fb ok"><strong>Correct!</strong><p class="sol">${p.s}</p></div>`;$("#puz-count").textContent=`${solved().length} / ${PUZ.length} solved`;renderBests()}
+  else{$("#puz-fb").innerHTML=`<div class="fb no"><strong>Not yet. Try again, or take a hint.</strong></div>`;const el=$("#puz-in")||$("#puz-choices");el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake")}
+}
+puzStage.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.filter){puzFilter=t.dataset.filter;puzList();return}
+  if(t.dataset.p!=null){puzShow(+t.dataset.p);return}
+  if(t.dataset.c!=null){puzSel=+t.dataset.c;document.querySelectorAll("#puz-choices button").forEach(b=>b.classList.toggle("sel",b===t));return}
+  const p=PUZ[puzOpen];
+  switch(t.id){
+    case "puz-back":puzOpen=null;puzList();break;
+    case "puz-prev":puzShow(puzOpen-1);break;
+    case "puz-next":puzShow(puzOpen+1);break;
+    case "puz-check":puzCheck();break;
+    case "puz-hint":$("#puz-fb").innerHTML=`<div class="fb hint"><strong>Hint</strong><span>${p.h}</span></div>`;break;
+    case "puz-reveal":$("#puz-fb").innerHTML=`<div class="fb hint"><strong>Answer: ${p.choices?esc(p.choices[p.a]):esc(p.a)}</strong><p class="sol">${p.s}</p><span class="small">Revealed answers don't count as solved. Come back later and try it from memory.</span></div>`;break;
+  }
+});
+puzStage.addEventListener("submit",e=>{e.preventDefault();puzCheck()});
+let resetArmed=false;
+$("#puz-reset").addEventListener("click",e=>{
+  if(!resetArmed){resetArmed=true;e.target.textContent="Click again to confirm";setTimeout(()=>{resetArmed=false;e.target.textContent="Reset progress"},3000);return}
+  resetArmed=false;e.target.textContent="Reset progress";store.set("puz-solved",[]);if(puzOpen==null)puzList();else puzShow(puzOpen);renderBests();
+});
+
+/* ---------- Round 3 relay ---------- */
+function relayStart(){
+  const t=pick(["mul","sq","pct"]);
+  if(t==="mul"){const a=ri(6,15),b=ri(4,12);return{text:`Work out <span class=m>${a} × ${b}</span>`,v:a*b}}
+  if(t==="sq"){const a=ri(11,19),b=ri(2,30);return{text:`Work out <span class=m>${a}² − ${b}</span>`,v:a*a-b}}
+  const p=pick([15,35,45,65,85]),n=ri(2,10)*20;return{text:`Work out <span class=m>${p}% of ${n}</span>`,v:p*n/100};
+}
+const STEPS=[
+ {k:"mul",f:T=>{if(T>150)return null;const k=ri(2,5);return{text:`Multiply T by ${k}`,v:T*k}}},
+ {k:"div",f:T=>{const ds=[2,3,4,5,6,7,8,9,11,12].filter(k=>T%k===0&&T/k>=3);if(!ds.length)return null;const k=pick(ds);return{text:`Divide T by ${k}`,v:T/k}}},
+ {k:"addsq",f:T=>{const n=ri(4,12);return{text:`Add ${n}² to T`,v:T+n*n}}},
+ {k:"subfrom",f:T=>{const N=Math.ceil((T+1)/100)*100+100;return{text:`Subtract T from ${N}`,v:N-T}}},
+ {k:"digits",f:T=>{if(T<100)return null;const v=String(T).split("").reduce((s,d)=>s+ +d,0);return{text:`Find the sum of the digits of T, then multiply by 7`,v:v*7}}},
+ {k:"pct",f:T=>{if(T%4===0)return{text:"Find 75% of T",v:T*3/4};if(T%5===0)return{text:"Find 40% of T",v:T*2/5};return null}},
+ {k:"sq",f:T=>T<=20?{text:"Square T",v:T*T}:null},
+ {k:"half",f:T=>T%2===0?{text:"Halve T, then add 99",v:T/2+99}:{text:"Double T, then subtract 1",v:T*2-1}},
+ {k:"frac",f:T=>{const ds=[3,6,8].filter(d=>T%d===0);if(!ds.length)return null;const d=pick(ds),k=d===3?2:d===6?5:3;return{text:`Find ${k}/${d} of T`,v:T*k/d}}}
+];
+function makeChain(){
+  for(let tries=0;tries<200;tries++){
+    const legs=[relayStart()];let last=null,okc=true;
+    for(let i=1;i<5;i++){
+      const T=legs[i-1].v;const opts=shuffle(STEPS.filter(s=>s.k!==last));let got=null;
+      for(const s of opts){const r=s.f(T);if(r&&Number.isInteger(r.v)&&r.v>=2&&r.v<=999){got=r;last=s.k;break}}
+      if(!got){okc=false;break}legs.push(got);
+    }
+    if(okc)return legs;
+  }
+  return [{text:"Work out <span class=m>12 × 7</span>",v:84},{text:"Divide T by 4",v:21},{text:"Add 9² to T",v:102},{text:"Subtract T from 300",v:198},{text:"Find the sum of the digits of T, then multiply by 7",v:126}];
+}
+function sprintQ(){
+  switch(ri(0,8)){
+    case 0:{const a=ri(6,15),b=ri(3,12);return{q:`${a} × ${b}`,v:a*b}}
+    case 1:{const a=ri(120,899),b=ri(45,399);return{q:`${a} + ${b}`,v:a+b}}
+    case 2:{const a=ri(300,999),b=ri(45,a-10);return{q:`${a} − ${b}`,v:a-b}}
+    case 3:{const n=ri(11,20);return{q:`${n}²`,v:n*n}}
+    case 4:{const p=pick([5,10,15,20,25,30,40,75]),N=ri(2,20)*20;return{q:`${p}% of ${N}`,v:p*N/100}}
+    case 5:{const d=pick([3,4,5,6,8]),k=pick(d===6?[1,5]:d===4?[1,3]:d===8?[3,5,7]:[1,2,d-1]),N=d*ri(3,15);return{q:`${k}/${d} of ${N}`,v:k*N/d}}
+    case 6:{const b=ri(3,12),q=ri(6,25);return{q:`${b*q} ÷ ${b}`,v:q}}
+    case 7:{const a=ri(2,30),b=ri(2,9),c=ri(2,12);return{q:`${a} + ${b} × ${c}`,v:a+b*c}}
+    default:{const n=ri(4,25);return{q:`√${n*n}`,v:n}}
+  }
+}
+const rel={mode:null,legs:[],i:0,start:0,pen:0,timer:null,sq:null,right:0,wrong:0,end:0};
+const relStage=$("#rel-stage");
+function relHome(){
+  clearInterval(rel.timer);rel.mode=null;
+  const bc=store.get("chain-best",null),bs=store.get("sprint-best",null);
+  relStage.innerHTML=`<div class="modes">
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="eyebrow">Mode A</div><h2 style="font-size:1.4rem">Relay chain</h2>
+      <p class="small">Five legs. Leg 1 is a starter question. Each later leg uses the previous answer, called <b>T</b>, like a baton passed between teammates. A wrong answer costs a 10-second penalty and you must fix it before passing on.</p>
+      <p class="small">${bc!=null?`Best time: <b class="num">${fmt(bc)}</b>`:"No best time yet"}</p>
+      <div><button class="btn" id="rel-chain" type="button">Start a relay</button></div>
+    </div>
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="eyebrow">Mode B</div><h2 style="font-size:1.4rem">60-second sprint</h2>
+      <p class="small">As many mental arithmetic questions as you can in one minute: times tables, squares, percentages, fractions of amounts and order of operations. Correct answers move on automatically. Press Enter to skip.</p>
+      <p class="small">${bs!=null?`Best score: <b class="num">${bs}</b> correct`:"No best score yet"}</p>
+      <div><button class="btn" id="rel-sprint" type="button">Start sprint</button></div>
+    </div></div>`;
+}
+function chainElapsed(){return (Date.now()-rel.start)/1000+rel.pen}
+function chainLeg(){
+  const L=rel.legs[rel.i];
+  relStage.innerHTML=`<div class="panel">
+    <div class="row" style="justify-content:space-between">
+      <div class="meta"><span>Runner <b class="num">${rel.i+1}</b> of 5</span>${rel.pen?`<span class="chip">+${rel.pen}s penalty</span>`:""}</div>
+      <span class="timer" id="rel-time" style="font-size:1.3rem">${fmt(chainElapsed())}</span>
+    </div>
+    <div class="legs" aria-hidden="true">${rel.legs.map((_,k)=>`<span class="${k<rel.i?"done":k===rel.i?"now":""}"></span>`).join("")}</div>
+    ${rel.i>0?`<div class="baton">Baton received: T = <b>${rel.legs[rel.i-1].v}</b></div>`:`<div class="baton">You're first. Start the relay!</div>`}
+    <p class="qtext" style="margin-top:18px;font-size:1.45rem">${L.text}.</p>
+    <form class="ans" id="rel-form" autocomplete="off"><input id="rel-in" inputmode="numeric" aria-label="Your answer" placeholder="Answer"><button class="btn" type="submit">${rel.i===4?"Finish":"Pass the baton →"}</button></form>
+    <div id="rel-fb" aria-live="polite"></div>
+    <div class="row" style="margin-top:18px"><button class="btn ghost" type="button" id="rel-quit">Quit to menu</button></div></div>`;
+  $("#rel-in").focus();
+}
+function chainSubmit(){
+  const inp=$("#rel-in");const m=matches(inp.value,rel.legs[rel.i].v);
+  if(m===null)return;
+  if(m){rel.i++;if(rel.i===5)chainDone();else chainLeg()}
+  else{rel.pen+=10;inp.classList.remove("shake");void inp.offsetWidth;inp.classList.add("shake");inp.select();
+    $("#rel-fb").innerHTML=`<div class="fb no"><strong>Not right: +10 s.</strong><span>Check your working before passing the baton.</span></div>`;}
+}
+function chainDone(){
+  clearInterval(rel.timer);const t=Math.round(chainElapsed());
+  const best=store.get("chain-best",null);const nb=best==null||t<best;if(nb)store.set("chain-best",t);
+  relStage.innerHTML=`<div class="panel">
+    <div class="eyebrow">Relay complete</div>
+    <div class="row" style="gap:18px;margin-top:8px"><span class="big num">${fmt(t)}</span>${nb?'<span class="chip">New best time</span>':""}</div>
+    <p class="small" style="margin-top:8px">${rel.pen?`Includes ${rel.pen} s of penalties.`:"Clean run, no penalties!"}</p>
+    <div class="review">${rel.legs.map((L,k)=>`<details><summary><span class="mk y">${k+1}</span><span>${L.text} → <b class="num">${L.v}</b></span></summary><div>${k?`T was ${rel.legs[k-1].v}.`:"Starter question."}</div></details>`).join("")}</div>
+    <div class="row" style="margin-top:18px"><button class="btn" id="rel-chain" type="button">Race again</button><button class="btn ghost" id="rel-quit" type="button">Back to modes</button></div></div>`;
+  renderBests();
+}
+function sprintNext(){rel.sq=sprintQ();$("#sp-q").textContent=rel.sq.q+" ="; const i=$("#sp-in");i.value="";i.focus()}
+function sprintStart(){
+  rel.mode="sprint";rel.right=0;rel.wrong=0;rel.end=Date.now()+60000;
+  relStage.innerHTML=`<div class="panel">
+    <div class="row" style="justify-content:space-between"><div class="meta"><span>Correct <b class="num" id="sp-r">0</b></span><span>Skipped <b class="num" id="sp-w">0</b></span></div><span class="timer" id="sp-t" style="font-size:1.3rem">1:00</span></div>
+    <div class="progress"><i id="sp-bar" style="width:100%"></i></div>
+    <div class="sprintq" id="sp-q" aria-live="polite"></div>
+    <form class="ans" id="sp-form" autocomplete="off" style="max-width:360px;margin:12px auto 0"><input id="sp-in" inputmode="numeric" aria-label="Your answer" placeholder="Answer" style="text-align:center"><button class="btn ghost" type="submit">Skip</button></form>
+    <div class="row" style="margin-top:18px"><button class="btn ghost" type="button" id="rel-quit">Quit to menu</button></div></div>`;
+  sprintNext();
+  clearInterval(rel.timer);
+  rel.timer=setInterval(()=>{const left=(rel.end-Date.now())/1000;if(left<=0){sprintDone();return}
+    $("#sp-t").textContent=fmt(Math.ceil(left));$("#sp-bar").style.width=(left/60*100)+"%"},200);
+}
+function sprintDone(){
+  clearInterval(rel.timer);rel.mode=null;
+  const best=store.get("sprint-best",null);const nb=best==null||rel.right>best;if(nb)store.set("sprint-best",rel.right);
+  relStage.innerHTML=`<div class="panel">
+    <div class="eyebrow">Time's up</div>
+    <div class="row" style="gap:18px;margin-top:8px"><span class="big num">${rel.right}</span><span>correct in 60 seconds</span>${nb?'<span class="chip">New best</span>':""}</div>
+    <p class="small" style="margin-top:8px">${rel.wrong} skipped. ${rel.right>=25?"Lightning fast.":rel.right>=15?"Great pace. Can you beat it?":"Keep practising: speed comes from knowing your tables and squares cold."}</p>
+    <div class="row" style="margin-top:18px"><button class="btn" id="rel-sprint" type="button">Sprint again</button><button class="btn ghost" id="rel-quit" type="button">Back to modes</button></div></div>`;
+  renderBests();
+}
+relStage.addEventListener("click",e=>{
+  const id=e.target.id;
+  if(id==="rel-chain"){rel.mode="chain";rel.legs=makeChain();rel.i=0;rel.pen=0;rel.start=Date.now();clearInterval(rel.timer);
+    rel.timer=setInterval(()=>{const t=$("#rel-time");if(t)t.textContent=fmt(chainElapsed())},250);chainLeg()}
+  else if(id==="rel-sprint")sprintStart();
+  else if(id==="rel-quit")relHome();
+});
+relStage.addEventListener("submit",e=>{e.preventDefault();
+  if(e.target.id==="rel-form")chainSubmit();
+  else if(e.target.id==="sp-form"&&rel.mode==="sprint"){rel.wrong++;$("#sp-w").textContent=rel.wrong;sprintNext()}
+});
+relStage.addEventListener("input",e=>{
+  if(e.target.id!=="sp-in"||rel.mode!=="sprint")return;
+  if(matches(e.target.value,rel.sq.v)===true){rel.right++;$("#sp-r").textContent=rel.right;sprintNext()}
+});
+
+/* ---------- home stats, countdown, router ---------- */
+function renderBests(){
+  const bi=store.get("ind-best",null);$("#best-ind").textContent=bi?`Best: ${bi.score}/20 in ${fmt(bi.time)}`:"No attempts yet";
+  $("#best-puz").textContent=`${solved().length} of ${PUZ.length} solved`;
+  const bc=store.get("chain-best",null),bs=store.get("sprint-best",null);
+  $("#best-rel").textContent=bc==null&&bs==null?"No races yet":[bc!=null?`Relay best ${fmt(bc)}`:"",bs!=null?`Sprint best ${bs}`:""].filter(Boolean).join(" · ");
+}
+const EVENT=new Date("2026-11-24T08:30:00+01:00").getTime();
+const REG_END=new Date("2026-11-19T23:59:00+01:00").getTime();
+function tick(){
+  const ms=EVENT-Date.now();
+  if(ms<=0){$("#cd").innerHTML=`<div><b style="font-size:1.8rem;font-family:var(--display)">Competition day!</b><small>Good luck, Mathletes.</small></div>`}
+  else{$("#cd-d").textContent=Math.floor(ms/864e5);$("#cd-h").textContent=Math.floor(ms%864e5/36e5);$("#cd-m").textContent=Math.floor(ms%36e5/6e4)}
+  const r=REG_END-Date.now(),pill=$("#reg-pill");
+  if(r<=0)pill.textContent="Registration closed";
+  else{const d=Math.floor(r/864e5);pill.textContent=d===0?"Closes today":d===1?"Closes tomorrow":`Closes in ${d} days`}
+}
+tick();setInterval(tick,30000);
+
+const VIEWS=["home","individual","puzzles","relay"];
+function route(){
+  const h=location.hash.slice(1),v=VIEWS.includes(h)?h:"home";
+  VIEWS.forEach(n=>{$("#v-"+n).hidden=n!==v;const a=document.querySelector(`[data-nav="${n}"]`);if(n===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  if(v!=="relay"&&rel.mode){clearInterval(rel.timer);relHome()}
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+indIntro();puzList();relHome();renderBests();route();
+})();
+</script>
